@@ -1,0 +1,11 @@
+server:
+  port: 8859
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: DataSet
