@@ -13,17 +13,25 @@ import java.util.stream.Collectors;
  */
 public enum MockTypeEnum {
 
-    NONE("不模拟"),
-    INCREASE("递增"),
-    FIXED("固定"),
-    RANDOM("随机"),
-    RULE("规则"),
-    DICT("词库");
+    NONE("none", "不模拟"),
+
+    INCREASE("increase", "递增"),
+
+    FIXED("fixed", "固定"),
+
+    RANDOM("random", "随机"),
+
+    RULE("rule", "规则"),
+
+    DICT("dict", "词库");
 
     private final String value;
 
-    MockTypeEnum(String value) {
+    private final String desc;
+
+    MockTypeEnum(String value, String desc) {
         this.value = value;
+        this.desc = desc;
     }
 
     /**
@@ -55,5 +63,9 @@ public enum MockTypeEnum {
 
     public String getValue() {
         return value;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 }

@@ -20,7 +20,6 @@ public class DataProducer {
      * 生成数据
      *
      * @param tableSchema
-     * @param rowNum
      * @return
      */
     public static List<Map<String, Object>> generateData(TableSchema tableSchema) {

@@ -79,12 +79,19 @@ public class TableSchema {
         private boolean autoIncrement;
 
         /**
-         * 模拟类型
+         * 模拟类型  MockTypeEnum.X.value {@link com.lazecoding.dataset.core.enums.MockTypeEnum}
          */
         private String mockType;
 
         /**
          * 模拟参数
+         *
+         * mockType:none  mockParams:
+         * mockType:increase  mockParams:起始值
+         * mockType:fixed  mockParams:定值
+         * mockType:random  mockParams:MockParamsRandomTypeEnum.X.value {@link com.lazecoding.dataset.core.enums.MockParamsRandomTypeEnum}
+         * mockType:rule  mockParams:正则
+         * mockType:dict  mockParams:字典Id
          */
         private String mockParams;
 
