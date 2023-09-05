@@ -44,6 +44,11 @@ public class TableSchema {
         private String fieldName;
 
         /**
+         * 字段类型(完整)
+         */
+        private String fieldTypeAll;
+
+        /**
          * 字段类型
          */
         private String fieldType;
@@ -106,6 +111,14 @@ public class TableSchema {
 
         public void setFieldName(String fieldName) {
             this.fieldName = fieldName;
+        }
+
+        public String getFieldTypeAll() {
+            return fieldTypeAll;
+        }
+
+        public void setFieldTypeAll(String fieldType) {
+            this.fieldTypeAll = fieldType;
         }
 
         public String getFieldType() {

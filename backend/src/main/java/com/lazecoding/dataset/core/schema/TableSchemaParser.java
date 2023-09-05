@@ -79,8 +79,9 @@ public class TableSchemaParser {
                     field.setFieldName(TableSchemaUtils.parseFieldName(columnDefinition.getNameAsString()));
                     SQLDataType sqlDataType = columnDefinition.getDataType();
                     String fieldTypeFull = sqlDataType.toString();
-                    field.setFieldType(fieldTypeFull);
+                    field.setFieldTypeAll(fieldTypeFull);
                     String fieldType = sqlDataType.getName();
+                    field.setFieldType(fieldType);
                     // 解析文本类型并设置长度
                     if (fieldType.equals(FieldTypeEnum.CHAR.getValue())
                             || fieldType.equals(FieldTypeEnum.VARCHAR.getValue())) {
@@ -202,6 +203,7 @@ public class TableSchemaParser {
     private static TableSchema.Field getDefaultField(String fieldName) {
         final TableSchema.Field field = new TableSchema.Field();
         field.setFieldName(fieldName);
+        field.setFieldTypeAll("text");
         field.setFieldType("text");
         field.setDefaultValue("");
         field.setNotNull(false);

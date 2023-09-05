@@ -77,7 +77,7 @@ public class SqlProducer {
             throw new BusinessException(ResponseCode.PARAMS_ERROR);
         }
         String fieldName = TableSchemaUtils.wrapFieldName(field.getFieldName());
-        String fieldType = field.getFieldType();
+        String fieldType = field.getFieldTypeAll();
         String defaultValue = field.getDefaultValue();
         boolean notNull = field.isNotNull();
         String comment = field.getComment();
