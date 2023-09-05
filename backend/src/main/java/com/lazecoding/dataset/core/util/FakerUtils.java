@@ -35,7 +35,7 @@ public class FakerUtils {
      * 获取随机值
      */
     public static String getRandomValue(MockParamsRandomTypeEnum randomTypeEnum) {
-        String defaultValue = RandomStringUtils.randomAlphanumeric(2, 6);
+        String defaultValue = RandomStringUtils.randomAlphanumeric(2, 20);
         if (randomTypeEnum == null) {
             return defaultValue;
         }

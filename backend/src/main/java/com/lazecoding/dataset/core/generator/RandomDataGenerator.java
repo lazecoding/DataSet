@@ -18,12 +18,16 @@ public class RandomDataGenerator implements DataGenerator {
     @Override
     public List<String> doGenerate(TableSchema.Field field, int rowNum) {
         String mockParams = field.getMockParams();
+        int fieldLength = field.getFieldLength();
         List<String> list = new ArrayList<>(rowNum);
         for (int i = 0; i < rowNum; i++) {
             MockParamsRandomTypeEnum randomTypeEnum = Optional.ofNullable(
                             MockParamsRandomTypeEnum.getEnumByValue(mockParams))
                     .orElse(MockParamsRandomTypeEnum.STRING);
             String randomString = FakerUtils.getRandomValue(randomTypeEnum);
+            if (fieldLength > 0 && randomString.length() > fieldLength) {
+                randomString = randomString.substring(0, fieldLength);
+            }
             list.add(randomString);
         }
         return list;

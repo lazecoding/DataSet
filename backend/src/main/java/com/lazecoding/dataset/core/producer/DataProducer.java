@@ -23,7 +23,8 @@ public class DataProducer {
      * @param rowNum
      * @return
      */
-    public static List<Map<String, Object>> generateData(TableSchema tableSchema, int rowNum) {
+    public static List<Map<String, Object>> generateData(TableSchema tableSchema) {
+        int rowNum = tableSchema.getMockNum();
         List<TableSchema.Field> fieldList = tableSchema.getFieldList();
         // 初始化结果数据
         List<Map<String, Object>> resultList = new ArrayList<>(rowNum);

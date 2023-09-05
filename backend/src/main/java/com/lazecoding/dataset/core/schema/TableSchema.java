@@ -49,9 +49,9 @@ public class TableSchema {
         private String fieldType;
 
         /**
-         * 文本类型字段长度
+         * 文本类型字段长度(-1 表示无约束)
          */
-        private int fieldLength;
+        private int fieldLength = -1;
 
         /**
          * 默认值
