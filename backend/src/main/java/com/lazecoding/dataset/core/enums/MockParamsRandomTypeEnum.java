@@ -13,23 +13,37 @@ import java.util.stream.Collectors;
  **/
 public enum MockParamsRandomTypeEnum {
 
-    STRING("字符串"),
-    NAME("人名"),
-    CITY("城市"),
-    URL("网址"),
-    EMAIL("邮箱"),
-    IP("IP"),
-    INTEGER("整数"),
-    DECIMAL("小数"),
-    UNIVERSITY("大学"),
-    DATE("日期"),
-    TIMESTAMP("时间戳"),
-    PHONE("手机号");
+    STRING("string", "字符串"),
+
+    NAME("name", "人名"),
+
+    CITY("city", "城市"),
+
+    URL("url", "网址"),
+
+    EMAIL("email", "邮箱"),
+
+    IP("ip", "IP"),
+
+    INTEGER("integer", "整数"),
+
+    DECIMAL("decimal", "小数"),
+
+    UNIVERSITY("university", "大学"),
+
+    DATE("date", "日期"),
+
+    TIMESTAMP("timestamp", "时间戳"),
+
+    PHONE("phone", "手机号");
 
     private final String value;
 
-    MockParamsRandomTypeEnum(String value) {
+    private final String desc;
+
+    MockParamsRandomTypeEnum(String value, String desc) {
         this.value = value;
+        this.desc = desc;
     }
 
     /**
@@ -61,5 +75,9 @@ public enum MockParamsRandomTypeEnum {
 
     public String getValue() {
         return value;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 }
