@@ -1,0 +1,35 @@
+{
+  "url": "http://www.baidu.com",
+  "method": "get",
+  "headers": [
+    {
+      "name": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "params": [
+    {
+      "name": "userName",
+      "mockType": "random",
+      "mockParams": "name"
+    },
+    {
+      "name": "cite",
+      "mockType": "random",
+      "mockParams": "city"
+    },
+    {
+      "name": "mail",
+      "mockType": "random",
+      "mockParams": "email"
+    },
+    {
+      "name": "ip",
+      "mockType": "random",
+      "mockParams": "ip"
+    }
+  ],
+  "body": null,
+  "mockNum": 5,
+  "comment": null
+}
