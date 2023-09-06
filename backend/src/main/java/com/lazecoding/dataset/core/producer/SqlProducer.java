@@ -7,6 +7,7 @@ import com.lazecoding.dataset.core.enums.MockTypeEnum;
 import com.lazecoding.dataset.core.schema.TableSchema;
 import com.lazecoding.dataset.core.schema.TableSchemaUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
  */
 public class SqlProducer {
 
+    private SqlProducer() {
+    }
 
     /**
      * 构造建表 SQL
@@ -27,7 +30,7 @@ public class SqlProducer {
      * @param tableSchema 表概要
      * @return 生成的 SQL
      */
-    public String buildCreateTableSql(TableSchema tableSchema) {
+    public static String buildCreateTableSql(TableSchema tableSchema) {
         // 构造模板
         String template = "%s\n"
                 + "create table if not exists %s\n"
@@ -72,7 +75,7 @@ public class SqlProducer {
      * @param field
      * @return
      */
-    public String buildCreateFieldSql(TableSchema.Field field) {
+    public static String buildCreateFieldSql(TableSchema.Field field) {
         if (field == null) {
             throw new BusinessException(ResponseCode.PARAMS_ERROR);
         }
@@ -123,7 +126,10 @@ public class SqlProducer {
      * @param dataList 数据列表
      * @return 生成的 SQL 列表字符串
      */
-    public String buildInsertSql(TableSchema tableSchema, List<Map<String, Object>> dataList) {
+    public static String buildInsertSql(TableSchema tableSchema, List<Map<String, Object>> dataList) {
+        if (CollectionUtils.isEmpty(dataList)) {
+            return "";
+        }
         // 构造模板
         String template = "insert into %s (%s) values (%s);";
         // 构造表名

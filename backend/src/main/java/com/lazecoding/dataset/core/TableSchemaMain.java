@@ -49,8 +49,7 @@ public class TableSchemaMain {
         tableSchema.setMockNum(3);
         List<Map<String, Object>> dataList = DataProducer.generateData(tableSchema);
         // 4. 使用模拟数据生成 SQL
-        SqlProducer sqlProducer = new SqlProducer();
-        String insertSql = sqlProducer.buildInsertSql(tableSchema, dataList);
+        String insertSql = SqlProducer.buildInsertSql(tableSchema, dataList);
         System.out.println(insertSql);
     }
 

@@ -33,8 +33,7 @@ public class CoreMain {
         ResultBean resultBean = ResultBean.getInstance();
         // 1. 获得最初的 tableSchema
         TableSchema tableSchema = TableSchemaParser.parserFromSql(sql);
-        SqlProducer sqlProducer = new SqlProducer();
-        String res = sqlProducer.buildCreateTableSql(tableSchema);
+        String res = SqlProducer.buildCreateTableSql(tableSchema);
         resultBean.setValue(res);
         // System.out.println(resultBean);
 
@@ -44,7 +43,7 @@ public class CoreMain {
         tableSchema.setMockNum(3);
         List<Map<String, Object>> dataList = DataProducer.generateData(tableSchema);
         // 4. 使用模拟数据生成 SQL
-        String insertSql = sqlProducer.buildInsertSql(tableSchema, dataList);
+        String insertSql = SqlProducer.buildInsertSql(tableSchema, dataList);
         System.out.println(insertSql);
 
         Gson gson = new GsonBuilder()
