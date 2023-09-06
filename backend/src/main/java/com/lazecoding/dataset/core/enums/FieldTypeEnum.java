@@ -13,31 +13,31 @@ import java.util.stream.Collectors;
  */
 public enum FieldTypeEnum {
 
-    TINYINT("tinyint", "Integer", "number", MockTypeEnum.RANDOM),
-    SMALLINT("smallint", "Integer", "number", MockTypeEnum.RANDOM),
-    MEDIUMINT("mediumint", "Integer", "number", MockTypeEnum.RANDOM),
-    INT("int", "Integer", "number", MockTypeEnum.RANDOM),
-    BIGINT("bigint", "Long", "number", MockTypeEnum.RANDOM),
-    FLOAT("float", "Double", "number", MockTypeEnum.RANDOM),
-    DOUBLE("double", "Double", "number", MockTypeEnum.RANDOM),
-    DECIMAL("decimal", "BigDecimal", "number", MockTypeEnum.RANDOM),
-    DATE("date", "Date", "Date", MockTypeEnum.RANDOM),
-    TIME("time", "Time", "Date", MockTypeEnum.RANDOM),
-    YEAR("year", "Integer", "number", MockTypeEnum.RANDOM),
-    DATETIME("datetime", "Date", "Date", MockTypeEnum.RANDOM),
-    TIMESTAMP("timestamp", "Long", "number", MockTypeEnum.RANDOM),
-    CHAR("char", "String", "string", MockTypeEnum.RANDOM),
-    VARCHAR("varchar", "String", "string", MockTypeEnum.RANDOM),
-    TINYTEXT("tinytext", "String", "string", MockTypeEnum.RANDOM),
-    TEXT("text", "String", "string", MockTypeEnum.RANDOM),
-    MEDIUMTEXT("mediumtext", "String", "string", MockTypeEnum.RANDOM),
-    LONGTEXT("longtext", "String", "string", MockTypeEnum.RANDOM),
-    TINYBLOB("tinyblob", "byte[]", "string", MockTypeEnum.RANDOM),
-    BLOB("blob", "byte[]", "string", MockTypeEnum.RANDOM),
-    MEDIUMBLOB("mediumblob", "byte[]", "string", MockTypeEnum.RANDOM),
-    LONGBLOB("longblob", "byte[]", "string", MockTypeEnum.RANDOM),
-    BINARY("binary", "byte[]", "string", MockTypeEnum.RANDOM),
-    VARBINARY("varbinary", "byte[]", "string", MockTypeEnum.RANDOM);
+    TINYINT("tinyint", "Integer", "整数类型（-2^7 到  2^7 - 1）", MockTypeEnum.RANDOM),
+    SMALLINT("smallint", "Integer", "整数类型（-2^15 到  2^15 - 1）", MockTypeEnum.RANDOM),
+    MEDIUMINT("mediumint", "Integer", "整数类型（-2^24 到  2^24 - 1）", MockTypeEnum.RANDOM),
+    INT("int", "Integer", "整数类型（-2^31 到 2^31 - 1）", MockTypeEnum.RANDOM),
+    BIGINT("bigint", "Long", "整数类型（-2^63 到 2^63 - 1）", MockTypeEnum.RANDOM),
+    FLOAT("float", "Double", "小数（单精度）", MockTypeEnum.RANDOM),
+    DOUBLE("double", "Double", "浮点（双精度）", MockTypeEnum.RANDOM),
+    DECIMAL("decimal", "BigDecimal", "定点型）", MockTypeEnum.RANDOM),
+    DATE("date", "Date", "日期", MockTypeEnum.RANDOM),
+    TIME("time", "Time", "时间", MockTypeEnum.RANDOM),
+    YEAR("year", "Integer", "年份", MockTypeEnum.RANDOM),
+    DATETIME("datetime", "Date", "时间", MockTypeEnum.RANDOM),
+    TIMESTAMP("timestamp", "Long", "时间戳", MockTypeEnum.RANDOM),
+    CHAR("char", "String", "定长字符", MockTypeEnum.RANDOM),
+    VARCHAR("varchar", "String", "变长字符", MockTypeEnum.RANDOM),
+    TINYTEXT("tinytext", "String", "文本（2^8-1）", MockTypeEnum.RANDOM),
+    TEXT("text", "String", "文本（2^16-1）", MockTypeEnum.RANDOM),
+    MEDIUMTEXT("mediumtext", "String", "文本（2^24-1）", MockTypeEnum.RANDOM),
+    LONGTEXT("longtext", "String", "文本（(2^32-1）", MockTypeEnum.RANDOM),
+    TINYBLOB("tinyblob", "byte[]", "二进制对象（2^8-1）", MockTypeEnum.RANDOM),
+    BLOB("blob", "byte[]", "二进制对象（2^16-1）", MockTypeEnum.RANDOM),
+    MEDIUMBLOB("mediumblob", "byte[]", "二进制对象（2^24-1）", MockTypeEnum.RANDOM),
+    LONGBLOB("longblob", "byte[]", "二进制对象（2^32-1）", MockTypeEnum.RANDOM),
+    BINARY("binary", "byte[]", "定长二进制字符串", MockTypeEnum.RANDOM),
+    VARBINARY("varbinary", "byte[]", "可变二进制字符串", MockTypeEnum.RANDOM);
 
     /**
      * 数据库类型
@@ -50,17 +50,16 @@ public enum FieldTypeEnum {
     private final String javaType;
 
     /**
-     * TS 类型
+     * 描述
      */
-    private final String typescriptType;
-
+    private final String desc;
 
     private final MockTypeEnum defaultMockType;
 
-    FieldTypeEnum(String value, String javaType, String typescriptType, MockTypeEnum defaultMockType) {
+    FieldTypeEnum(String value, String javaType, String desc, MockTypeEnum defaultMockType) {
         this.value = value;
         this.javaType = javaType;
-        this.typescriptType = typescriptType;
+        this.desc = desc;
         this.defaultMockType = defaultMockType;
     }
 
@@ -99,10 +98,9 @@ public enum FieldTypeEnum {
         return javaType;
     }
 
-    public String getTypescriptType() {
-        return typescriptType;
+    public String getDesc() {
+        return desc;
     }
-
 
     public MockTypeEnum getDefaultMockType() {
         return defaultMockType;

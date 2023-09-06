@@ -58,6 +58,10 @@ public class ResultBean implements Serializable {
         this.code = code;
     }
 
+    public void setCode(int code) {
+        this.code = String.valueOf(code);
+    }
+
     public boolean isSuccess() {
         return isSuccess;
     }
