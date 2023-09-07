@@ -11,3 +11,22 @@
 
 - 解析请求 URL 生成类似 PostMan 页面，区别在于 postman 中填值的区域用来设置生成数据规则
 - 具体生成阶段数据落地方式：执行请求、生成 CURL 脚本。
+
+## 结构
+
+```C
+-- bin
+-- config
+-- data
+    -- <projectId>
+        -- mock
+            -- http_request
+            -- table_schema
+        -- source
+            -- dict
+            -- rule
+-- result
+    -- <projectId>
+        -- table_schema
+-- logs
+```
