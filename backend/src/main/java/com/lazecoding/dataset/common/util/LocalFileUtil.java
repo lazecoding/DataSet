@@ -138,6 +138,28 @@ public class LocalFileUtil {
     }
 
     /**
+     * 递归删除
+     */
+    public static boolean forceDelete(String path) {
+        boolean isSuccess = false;
+        try {
+            FileUtils.forceDelete(new File(path));
+            isSuccess = true;
+        } catch (FileNotFoundException e) {
+            isSuccess = true;
+            System.err.format("%s: no such" + " file or directory%n", path);
+        } catch (NoSuchFileException x) {
+            isSuccess = true;
+            System.err.format("%s: no such" + " file or directory%n", path);
+        } catch (IOException x) {
+            // File permission problems are caught here.
+            System.err.println(x);
+            isSuccess = false;
+        }
+        return isSuccess;
+    }
+
+    /**
      * 删除文件或目录
      *
      * @param path
