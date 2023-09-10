@@ -31,6 +31,7 @@ public class CoreMain {
                 "    primary key (iid)\n" +
                 ")engine=innodb default charset=utf8;";
         ResultBean resultBean = ResultBean.getInstance();
+        System.out.println(sql);
         // 1. 获得最初的 tableSchema
         TableSchema tableSchema = TableSchemaParser.parserFromSql(sql);
         String res = SqlProducer.buildCreateTableSql(tableSchema);

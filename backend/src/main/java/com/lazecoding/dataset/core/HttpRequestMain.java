@@ -48,7 +48,7 @@ public class HttpRequestMain {
         String httpRequestExample = "";
 
         try {
-            File file = ResourceUtils.getFile("classpath:static/HttpRequestExample.json");
+            File file = ResourceUtils.getFile("classpath:private/example/HttpRequestExample.json");
             httpRequestExample =  FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();

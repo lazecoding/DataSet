@@ -32,7 +32,7 @@ public class TableSchemaMain {
         String tableSchemaExample = "";
 
         try {
-            File file = ResourceUtils.getFile("classpath:static/TableSchemaExample.json");
+            File file = ResourceUtils.getFile("classpath:private/example/TableSchemaExample.json");
             tableSchemaExample =  FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();
