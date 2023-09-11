@@ -17,7 +17,7 @@ public class DataGeneratorFactory {
     /**
      * 模拟类型 => 生成器映射
      */
-    private static final Map<MockTypeEnum, DataGenerator> MOCK_TYPE_DATA_GENERATOR_MAP = new HashMap<>() {{
+    private static final Map<MockTypeEnum, DataGenerator> MOCK_TYPE_DATA_GENERATOR_MAP = new HashMap<MockTypeEnum, DataGenerator>() {{
         put(MockTypeEnum.NONE, new DefaultDataGenerator());
         put(MockTypeEnum.FIXED, new FixedDataGenerator());
         put(MockTypeEnum.RANDOM, new RandomDataGenerator());
