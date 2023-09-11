@@ -1,9 +1,9 @@
 package com.lazecoding.dataset.core.producer;
 
-import com.lazecoding.dataset.common.constans.ResponseCode;
-import com.lazecoding.dataset.common.exceptions.BusinessException;
+import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.core.enums.FieldTypeEnum;
 import com.lazecoding.dataset.core.enums.MockTypeEnum;
+import com.lazecoding.dataset.core.schema.SchemaException;
 import com.lazecoding.dataset.core.schema.TableSchema;
 import com.lazecoding.dataset.core.schema.TableSchemaUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -77,7 +77,7 @@ public class SqlProducer {
      */
     public static String buildCreateFieldSql(TableSchema.Field field) {
         if (field == null) {
-            throw new BusinessException(ResponseCode.PARAMS_ERROR);
+            throw new NilParamException("field is nil.");
         }
         String fieldName = TableSchemaUtils.wrapFieldName(field.getFieldName());
         String fieldType = field.getFieldTypeAll();
@@ -123,7 +123,7 @@ public class SqlProducer {
      * e.g. INSERT INTO report (id, content) VALUES (1, '这个有点问题吧');
      *
      * @param tableSchema 表概要
-     * @param dataList 数据列表
+     * @param dataList    数据列表
      * @return 生成的 SQL 列表字符串
      */
     public static String buildInsertSql(TableSchema tableSchema, List<Map<String, Object>> dataList) {

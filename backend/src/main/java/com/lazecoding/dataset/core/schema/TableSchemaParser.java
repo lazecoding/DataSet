@@ -6,21 +6,18 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlCreateTableParser;
-import com.alibaba.excel.EasyExcel;
-import com.lazecoding.dataset.common.constans.ResponseCode;
-import com.lazecoding.dataset.common.exceptions.BusinessException;
+import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.core.enums.FieldTypeEnum;
 import com.lazecoding.dataset.core.enums.MockTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * 表概要解析器
@@ -29,6 +26,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class TableSchemaParser {
+
+    private static final Logger logger = LoggerFactory.getLogger(TableSchemaParser.class);
 
     /**
      * 日期格式
@@ -43,7 +42,7 @@ public class TableSchemaParser {
      */
     public static TableSchema parserFromSql(String sql) {
         if (StringUtils.isBlank(sql)) {
-            throw new BusinessException(ResponseCode.PARAMS_ERROR);
+            throw new NilParamException("sql is nil.");
         }
         try {
             // 解析 SQL
@@ -127,7 +126,8 @@ public class TableSchemaParser {
             tableSchema.setFieldList(fieldList);
             return tableSchema;
         } catch (Exception e) {
-            throw new BusinessException(ResponseCode.PARAMS_ERROR, "请确认 SQL 语句正确");
+            logger.error("sql parser exception", e);
+            throw new SchemaException("sql parser exception");
         }
     }
 
