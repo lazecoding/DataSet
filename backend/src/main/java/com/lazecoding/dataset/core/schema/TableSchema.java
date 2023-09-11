@@ -1,5 +1,6 @@
 package com.lazecoding.dataset.core.schema;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,9 @@ import java.util.List;
  *
  * @author lazecoding
  */
-public class TableSchema {
+public class TableSchema implements Serializable {
+
+    private static final long serialVersionUID = -1;
 
     /**
      * 库名

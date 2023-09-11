@@ -46,6 +46,10 @@ public class DictController {
             List<String> dicts = dictService.listDict(projectId);
             resultBean.setValue(dicts);
             isSuccess = true;
+        } catch (UnCreatedFileException e) {
+            isSuccess = false;
+            message = e.getMessage();
+            logger.error("获取词典列表失败", e);
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";
@@ -73,6 +77,10 @@ public class DictController {
         boolean isSuccess = false;
         try {
             isSuccess = dictService.createDict(projectId, dictId);
+        }catch (UnCreatedFileException e) {
+            isSuccess = false;
+            message = e.getMessage();
+            logger.error("创建词典失败", e);
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";
@@ -265,7 +273,7 @@ public class DictController {
             isSuccess = false;
             message = e.getMessage();
             logger.error("删除词条失败", e);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";
             logger.error("删除词条失败", e);

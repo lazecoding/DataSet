@@ -2,6 +2,7 @@ package com.lazecoding.dataset.common.util;
 
 import com.google.gson.reflect.TypeToken;
 import com.lazecoding.dataset.common.exceptions.UnCreatedFileException;
+import com.lazecoding.dataset.core.schema.TableSchema;
 import com.lazecoding.dataset.model.DictItem;
 import com.lazecoding.dataset.model.Rule;
 import org.apache.commons.io.FileUtils;
@@ -210,6 +211,7 @@ public class LocalDataUtil {
      * 写入规则
      */
     public static boolean writeRule(String projectId, String ruleJson) {
+        checkProjectExist(projectId);
         return LocalFileUtil.writeStringToFile(getProjectRulePath(projectId) + RULE_DATA_FILE_NAME, ruleJson);
     }
 
@@ -221,9 +223,10 @@ public class LocalDataUtil {
     }
 
     /**
-     * 获取环境中项目
+     * 获取环境中词典
      */
     public static List<String> findDicts(String projectId) {
+        checkProjectExist(projectId);
         List<String> dicts = new ArrayList<>();
         if (!LocalFileUtil.createIfNil(getProjectDictPath(projectId))) {
             return dicts;
@@ -241,6 +244,7 @@ public class LocalDataUtil {
      * 创建词典
      */
     public static boolean createDict(String projectId, String dictId) {
+        checkProjectExist(projectId);
         if (!LocalFileUtil.createIfNil(getProjectDictPath(projectId))) {
             return false;
         }
@@ -280,6 +284,7 @@ public class LocalDataUtil {
      * 获取环境中词条
      */
     public static Map<String, DictItem> findDictItems(String projectId, String dictId) {
+        checkProjectExist(projectId);
         Map<String, DictItem> dictItemMap = new HashMap<>();
         if (!LocalFileUtil.createIfNil(getProjectDictPath(projectId))) {
             return dictItemMap;
@@ -306,6 +311,7 @@ public class LocalDataUtil {
      * 写入词典
      */
     public static boolean writeDict(String projectId, String dictId, String dictItemJson) {
+        checkProjectExist(projectId);
         return LocalFileUtil.writeStringToFile(getProjectDictPath(projectId, dictId), dictItemJson);
     }
 
@@ -316,6 +322,91 @@ public class LocalDataUtil {
         return LocalFileUtil.delete(getProjectDictPath(projectId, dictId));
     }
 
+
+
+    /**
+     * 项目 TableSchema 路径
+     */
+    private static String getProjectTableSchemaFile(String projectId) {
+        // id.json
+        return TABLE_SCHEMA_DATA.replace(PROJECT_ID_TAG, projectId);
+    }
+
+    /**
+     * 项目 TableSchema 路径
+     */
+    private static String getProjectTableSchemaFile(String projectId, String tableSchemaId) {
+        // id.json
+        return (TABLE_SCHEMA_DATA.replace(PROJECT_ID_TAG, projectId)) + tableSchemaId + ".json";
+    }
+
+
+    /**
+     * 获取项目中的 TableSchema
+     */
+    public static List<String> findTableSchemas(String projectId) {
+        checkProjectExist(projectId);
+        List<String> tableSchemas = new ArrayList<>();
+        if (!LocalFileUtil.createIfNil(getProjectTableSchemaFile(projectId))) {
+            return tableSchemas;
+        }
+        List<File> findTableSchemaFiles = LocalFileUtil.list(getProjectTableSchemaFile(projectId));
+        if (!CollectionUtils.isEmpty(findTableSchemaFiles)) {
+            for (File file : findTableSchemaFiles) {
+                tableSchemas.add(file.getName().replace(".json",""));
+            }
+        }
+        return tableSchemas;
+    }
+
+    
+    /**
+     * 删除 TableSchema
+     */
+    public static boolean deleteTableSchema(String projectId, String tableSchemaId) {
+        return LocalFileUtil.delete(getProjectTableSchemaFile(projectId, tableSchemaId));
+    }
+
+
+    /**
+     * 清空 TableSchema
+     */
+    public static boolean dropTableSchema(String projectId) {
+        return LocalFileUtil.forceDelete(getProjectTableSchemaFile(projectId));
+    }
+
+    /**
+     * 写入 TableSchema
+     */
+    public static boolean writeTableSchema(String projectId, String tableSchemaId, String tableSchemaJson) {
+        checkProjectExist(projectId);
+        return LocalFileUtil.writeStringToFile(getProjectTableSchemaFile(projectId, tableSchemaId), tableSchemaJson);
+    }
+
+
+    /**
+     * 获取 TableSchema
+     */
+    public static TableSchema findTableSchemaFile(String projectId, String tableSchemaId) {
+        // 先判断项目有没有创建
+        checkProjectExist(projectId);
+        String tableSchemaJson = "";
+        File file = new File(getProjectTableSchemaFile(projectId, tableSchemaId));
+        if (!file.exists()) {
+            return null;
+        }
+        try {
+            tableSchemaJson = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            logger.error("读取文件异常", e);
+        }
+        TableSchema tableSchema = null;
+        if (StringUtils.hasText(tableSchemaJson)) {
+            tableSchema = JsonUtil.GSON.fromJson(tableSchemaJson, new TypeToken<TableSchema>() {
+            }.getType());
+        }
+        return tableSchema;
+    }
 
 
 }
