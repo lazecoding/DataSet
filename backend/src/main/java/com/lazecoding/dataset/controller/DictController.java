@@ -35,15 +35,12 @@ public class DictController {
      */
     @RequestMapping("list-dict")
     @ResponseBody
-    public ResultBean listDict(String projectId) {
+    public ResultBean listDict() {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
         String message = "";
         boolean isSuccess = false;
         try {
-            List<String> dicts = dictService.listDict(projectId);
+            List<String> dicts = dictService.listDict();
             resultBean.setValue(dicts);
             isSuccess = true;
         } catch (UnCreatedFileException e) {
@@ -65,10 +62,7 @@ public class DictController {
      */
     @RequestMapping("create-dict")
     @ResponseBody
-    public ResultBean createDict(String projectId, String dictId) {
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
+    public ResultBean createDict(String dictId) {
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
@@ -76,7 +70,7 @@ public class DictController {
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = dictService.createDict(projectId, dictId);
+            isSuccess = dictService.createDict(dictId);
         }catch (UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
@@ -96,10 +90,7 @@ public class DictController {
      */
     @RequestMapping("delete-dict")
     @ResponseBody
-    public ResultBean deleteDict(String projectId, String dictId) {
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
+    public ResultBean deleteDict(String dictId) {
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
@@ -107,7 +98,7 @@ public class DictController {
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = dictService.deleteDict(projectId, dictId);
+            isSuccess = dictService.deleteDict(dictId);
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";
@@ -123,16 +114,12 @@ public class DictController {
      */
     @RequestMapping("drop-dict")
     @ResponseBody
-    public ResultBean dropDict(String projectId) {
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
-
+    public ResultBean dropDict() {
         ResultBean resultBean = ResultBean.getInstance();
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = dictService.dropDict(projectId);
+            isSuccess = dictService.dropDict();
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";
@@ -149,18 +136,15 @@ public class DictController {
      */
     @RequestMapping("list-item")
     @ResponseBody
-    public ResultBean listItem(String projectId, String dictId) {
+    public ResultBean listItem(String dictId) {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
         String message = "";
         boolean isSuccess = false;
         try {
-            List<DictItem> dictItems = dictService.listItem(projectId, dictId);
+            List<DictItem> dictItems = dictService.listItem(dictId);
             resultBean.setValue(dictItems);
             isSuccess = true;
         } catch (UnCreatedFileException e) {
@@ -183,11 +167,8 @@ public class DictController {
      */
     @RequestMapping("add-item")
     @ResponseBody
-    public ResultBean addItem(String projectId, String dictId, String value, String desc) {
+    public ResultBean addItem(String dictId, String value, String desc) {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
@@ -197,7 +178,7 @@ public class DictController {
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = dictService.addItem(projectId, dictId, value, desc);
+            isSuccess = dictService.addItem(dictId, value, desc);
         } catch (UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
@@ -217,11 +198,8 @@ public class DictController {
      */
     @RequestMapping("modify-item")
     @ResponseBody
-    public ResultBean modifyItem(String projectId, String dictId, String id, String value, String desc) {
+    public ResultBean modifyItem(String dictId, String id, String value, String desc) {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
@@ -234,7 +212,7 @@ public class DictController {
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = dictService.modifyItem(projectId, dictId, id, value, desc);
+            isSuccess = dictService.modifyItem(dictId, id, value, desc);
         } catch (NilValueException | UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
@@ -254,11 +232,8 @@ public class DictController {
      */
     @RequestMapping("delete-item")
     @ResponseBody
-    public ResultBean deleteItem(String projectId, String dictId, String id) {
+    public ResultBean deleteItem(String dictId, String id) {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
@@ -268,7 +243,7 @@ public class DictController {
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = dictService.deleteItem(projectId, dictId, id);
+            isSuccess = dictService.deleteItem(dictId, id);
         } catch (UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
@@ -288,18 +263,15 @@ public class DictController {
      */
     @RequestMapping("drop-item")
     @ResponseBody
-    public ResultBean dropItem(String projectId, String dictId) {
+    public ResultBean dropItem(String dictId) {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = dictService.dropItem(projectId, dictId);
+            isSuccess = dictService.dropItem(dictId);
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";

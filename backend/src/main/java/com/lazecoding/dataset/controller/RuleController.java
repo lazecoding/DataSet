@@ -37,15 +37,12 @@ public class RuleController {
      */
     @RequestMapping("list")
     @ResponseBody
-    public ResultBean list(String projectId) {
+    public ResultBean list() {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
         String message = "";
         boolean isSuccess = false;
         try {
-            List<Rule> rules = ruleService.list(projectId);
+            List<Rule> rules = ruleService.list();
             resultBean.setValue(rules);
             isSuccess = true;
         } catch (UnCreatedFileException e) {
@@ -67,11 +64,8 @@ public class RuleController {
      */
     @RequestMapping("add")
     @ResponseBody
-    public ResultBean add(String projectId, String regex, String desc) {
+    public ResultBean add(String regex, String desc) {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
         if (!StringUtils.hasText(regex)) {
             throw new NilParamException("regex is nil.");
         }
@@ -79,7 +73,7 @@ public class RuleController {
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = ruleService.add(projectId, regex, desc);
+            isSuccess = ruleService.add(regex, desc);
         } catch (UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
@@ -99,11 +93,8 @@ public class RuleController {
      */
     @RequestMapping("modify")
     @ResponseBody
-    public ResultBean modify(String projectId, String id, String regex, String desc) {
+    public ResultBean modify(String id, String regex, String desc) {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
         if (!StringUtils.hasText(id)) {
             throw new NilParamException("id is nil.");
         }
@@ -114,7 +105,7 @@ public class RuleController {
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = ruleService.modify(projectId, id, regex, desc);
+            isSuccess = ruleService.modify(id, regex, desc);
         } catch (UnCreatedFileException | NilValueException e) {
             isSuccess = false;
             message = e.getMessage();
@@ -135,11 +126,8 @@ public class RuleController {
      */
     @RequestMapping("delete")
     @ResponseBody
-    public ResultBean delete(String projectId, String id) {
+    public ResultBean delete(String id) {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
         if (!StringUtils.hasText(id)) {
             throw new NilParamException("id is nil.");
         }
@@ -147,7 +135,7 @@ public class RuleController {
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = ruleService.delete(projectId, id);
+            isSuccess = ruleService.delete(id);
         } catch (UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
@@ -167,16 +155,12 @@ public class RuleController {
      */
     @RequestMapping("drop")
     @ResponseBody
-    public ResultBean drop(String projectId) {
+    public ResultBean drop() {
         ResultBean resultBean = ResultBean.getInstance();
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
-
         String message = "";
         boolean isSuccess = false;
         try {
-            isSuccess = ruleService.drop(projectId);
+            isSuccess = ruleService.drop();
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";

@@ -23,37 +23,37 @@ public class DictService {
     /**
      * 获取词典列表
      */
-    public List<String> listDict(String projectId) {
-        return LocalDataUtil.findDicts(projectId);
+    public List<String> listDict() {
+        return LocalDataUtil.findDicts();
     }
 
     /**
      * 创建词典
      */
-    public boolean createDict(String projectId, String dictId) {
-        return LocalDataUtil.createDict(projectId, dictId);
+    public boolean createDict(String dictId) {
+        return LocalDataUtil.createDict(dictId);
     }
 
     /**
      * 删除词典
      */
-    public boolean deleteDict(String projectId, String dictId) {
-        return LocalDataUtil.deleteDict(projectId, dictId);
+    public boolean deleteDict(String dictId) {
+        return LocalDataUtil.deleteDict(dictId);
     }
 
     /**
      * 清空词典
      */
-    public boolean dropDict(String projectId) {
-        return LocalDataUtil.dropDict(projectId);
+    public boolean dropDict() {
+        return LocalDataUtil.dropDict();
     }
 
     /**
      * 获取词条列表
      */
-    public List<DictItem> listItem(String projectId, String dictId) {
+    public List<DictItem> listItem(String dictId) {
         List<DictItem> items = new ArrayList<>();
-        Map<String, DictItem> dictItemMap = LocalDataUtil.findDictItems(projectId, dictId);
+        Map<String, DictItem> dictItemMap = LocalDataUtil.findDictItems(dictId);
         if (!CollectionUtils.isEmpty(dictItemMap)) {
             items = dictItemMap.values().stream().collect(Collectors.toList());
         }
@@ -64,16 +64,16 @@ public class DictService {
     /**
      * 增加词条
      */
-    public boolean addItem(String projectId, String dictId, String value, String desc) {
+    public boolean addItem(String dictId, String value, String desc) {
         // 获取词条列表
-        Map<String, DictItem> dictItemMap = LocalDataUtil.findDictItems(projectId, dictId);
+        Map<String, DictItem> dictItemMap = LocalDataUtil.findDictItems(dictId);
         DictItem dictItem = new DictItem(value, desc);
         dictItemMap.put(dictItem.getId(), dictItem);
         // 格式化
         String dictItemJson = JsonUtil.GSON.toJson(dictItemMap);
         // 新增
         if (StringUtils.hasText(dictItemJson)) {
-            return LocalDataUtil.writeDict(projectId, dictId, dictItemJson);
+            return LocalDataUtil.writeDict(dictId, dictItemJson);
         }
         return false;
     }
@@ -81,9 +81,9 @@ public class DictService {
     /**
      * 修改词条
      */
-    public boolean modifyItem(String projectId, String dictId, String id, String value, String desc) {
+    public boolean modifyItem(String dictId, String id, String value, String desc) {
         // 获取词条列表
-        Map<String, DictItem> dictItemMap = LocalDataUtil.findDictItems(projectId, dictId);
+        Map<String, DictItem> dictItemMap = LocalDataUtil.findDictItems(dictId);
         DictItem dictItem = null;
         if (CollectionUtils.isEmpty(dictItemMap) || ObjectUtils.isEmpty(dictItem = dictItemMap.get(id))) {
             throw new NilValueException("未匹配到目标值");
@@ -94,7 +94,7 @@ public class DictService {
         String dictItemJson = JsonUtil.GSON.toJson(dictItemMap);
         // 新增
         if (StringUtils.hasText(dictItemJson)) {
-            return LocalDataUtil.writeDict(projectId, dictId, dictItemJson);
+            return LocalDataUtil.writeDict(dictId, dictItemJson);
         }
         return false;
     }
@@ -102,23 +102,22 @@ public class DictService {
     /**
      * 删除词条
      */
-    public boolean deleteItem(String projectId, String dictId, String id) {
+    public boolean deleteItem(String dictId, String id) {
         // 获取词条列表
-        Map<String, DictItem> dictItemMap = LocalDataUtil.findDictItems(projectId, dictId);
+        Map<String, DictItem> dictItemMap = LocalDataUtil.findDictItems(dictId);
         if (!CollectionUtils.isEmpty(dictItemMap)) {
             dictItemMap.remove(id);
             String dictItemJson = JsonUtil.GSON.toJson(dictItemMap);
-            return LocalDataUtil.writeDict(projectId, dictId, dictItemJson);
+            return LocalDataUtil.writeDict(dictId, dictItemJson);
         }
-        // 格式化
         return true;
     }
 
     /**
      * 清空词条
      */
-    public boolean dropItem(String projectId, String dictId) {
-        return LocalDataUtil.dropDictItem(projectId, dictId);
+    public boolean dropItem(String dictId) {
+        return LocalDataUtil.dropDictItem(dictId);
     }
 
 }

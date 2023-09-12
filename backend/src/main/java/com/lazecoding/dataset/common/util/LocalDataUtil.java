@@ -21,6 +21,8 @@ import java.util.Map;
 
 /**
  * 本地数据存储
+ *
+ * @author lazecoding
  */
 public class LocalDataUtil {
 
@@ -39,35 +41,42 @@ public class LocalDataUtil {
      */
     private static final String LOCAL_DATA_PATH = "./../data/";
 
+
+    /**
+     * 文件路径
+     */
+    private static final String LOCAL_MOCK_DATA = LOCAL_DATA_PATH + "mock/";
+
     /**
      * 文件项目路径
      */
-    private static final String LOCAL_DATA_PROJECT_PATH = "./../data/" + PROJECT_ID_TAG + "/";
+    private static final String LOCAL_DATA_PROJECT_PATH = LOCAL_MOCK_DATA + PROJECT_ID_TAG + "/";
+
 
     /**
      * HttpRequest
      */
-    private static final String HTTP_REQUEST_DATA = LOCAL_DATA_PATH + PROJECT_ID_TAG + "/mock/http_request/";
+    private static final String HTTP_REQUEST_DATA = LOCAL_MOCK_DATA + PROJECT_ID_TAG + "/http_request/";
 
     /**
      * TableSchema
      */
-    private static final String TABLE_SCHEMA_DATA = LOCAL_DATA_PATH + PROJECT_ID_TAG + "/mock/table_schema/";
+    private static final String TABLE_SCHEMA_DATA = LOCAL_MOCK_DATA + PROJECT_ID_TAG + "/table_schema/";
 
     /**
      * 字典
      */
-    private static final String DICT_DATA = LOCAL_DATA_PATH + PROJECT_ID_TAG + "/source/dict/";
+    private static final String DICT_DATA = LOCAL_DATA_PATH + "source/dict/";
 
     /**
      * 正则
      */
-    private static final String RULE_DATA = LOCAL_DATA_PATH + PROJECT_ID_TAG + "/source/rule/";
+    private static final String RULE_DATA = LOCAL_DATA_PATH + "source/rule/";
 
     /**
      * 正则文件固定文件名
      */
-    private static final String RULE_DATA_FILE_NAME = "rule.json";
+    private static final String RULE_DATA_FILE_NAME = RULE_DATA + "rule.json";
 
     /**
      * 结果路径
@@ -77,7 +86,7 @@ public class LocalDataUtil {
     /**
      * 结果路径
      */
-    private static final String RESULT_PROJECT_PATH = "./../result/" + PROJECT_ID_TAG + "/";
+    private static final String RESULT_PROJECT_PATH = RESULT_PATH + PROJECT_ID_TAG + "/";
 
 
     /**
@@ -92,26 +101,12 @@ public class LocalDataUtil {
         return LOCAL_DATA_PROJECT_PATH.replace(PROJECT_ID_TAG, projectId);
     }
 
-    /**
-     * 项目词典数据
-     */
-    private static String getProjectDictPath(String projectId) {
-        return DICT_DATA.replace(PROJECT_ID_TAG, projectId);
-    }
 
     /**
      * 项目词典数据
      */
-    private static String getProjectDictPath(String projectId, String dictId) {
-        return (DICT_DATA.replace(PROJECT_ID_TAG, projectId)) + dictId + ".json";
-    }
-
-
-    /**
-     * 项目规则数据
-     */
-    private static String getProjectRulePath(String projectId) {
-        return RULE_DATA.replace(PROJECT_ID_TAG, projectId);
+    private static String getProjectDictPath(String dictId) {
+        return DICT_DATA + dictId + ".json";
     }
 
 
@@ -127,10 +122,10 @@ public class LocalDataUtil {
      */
     public static List<String> findProjects() {
         List<String> projects = new ArrayList<>();
-        if (!LocalFileUtil.createIfNil(LOCAL_DATA_PATH)) {
+        if (!LocalFileUtil.createIfNil(LOCAL_MOCK_DATA)) {
             return projects;
         }
-        List<File> projectDirs = LocalFileUtil.listDirs(LOCAL_DATA_PATH);
+        List<File> projectDirs = LocalFileUtil.listDirs(LOCAL_MOCK_DATA);
         if (!CollectionUtils.isEmpty(projectDirs)) {
             for (File file : projectDirs) {
                 projects.add(file.getName());
@@ -143,7 +138,7 @@ public class LocalDataUtil {
      * 创建项目
      */
     public static boolean createProject(String projectId) {
-        if (!LocalFileUtil.createIfNil(LOCAL_DATA_PATH)) {
+        if (!LocalFileUtil.createIfNil(LOCAL_MOCK_DATA)) {
             return false;
         }
         if (!StringUtils.hasText(projectId)) {
@@ -165,6 +160,7 @@ public class LocalDataUtil {
 
     /**
      * 检查项目是否存在
+     *
      * @param projectId
      */
     public static void checkProjectExist(String projectId) {
@@ -177,16 +173,13 @@ public class LocalDataUtil {
     /**
      * 获取环境中规则
      */
-    public static Map<String, Rule> findRules(String projectId) {
-        // 先判断项目有没有创建
-        checkProjectExist(projectId);
-
+    public static Map<String, Rule> findRules() {
         Map<String, Rule> ruleMap = new HashMap<>();
-        if (!LocalFileUtil.createIfNil(getProjectRulePath(projectId))) {
+        if (!LocalFileUtil.createIfNil(RULE_DATA)) {
             return ruleMap;
         }
         String ruleStr = "";
-        File file = new File(getProjectRulePath(projectId) + RULE_DATA_FILE_NAME);
+        File file = new File(RULE_DATA_FILE_NAME);
         if (file.exists()) {
             try {
                 ruleStr = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
@@ -211,31 +204,29 @@ public class LocalDataUtil {
     /**
      * 写入规则
      */
-    public static boolean writeRule(String projectId, String ruleJson) {
-        checkProjectExist(projectId);
-        return LocalFileUtil.writeStringToFile(getProjectRulePath(projectId) + RULE_DATA_FILE_NAME, ruleJson);
+    public static boolean writeRule(String ruleJson) {
+        return LocalFileUtil.writeStringToFile(RULE_DATA_FILE_NAME, ruleJson);
     }
 
     /**
      * 清空规则
      */
-    public static boolean dropRule(String projectId) {
-        return LocalFileUtil.delete(getProjectRulePath(projectId) + RULE_DATA_FILE_NAME);
+    public static boolean dropRule() {
+        return LocalFileUtil.delete(RULE_DATA_FILE_NAME);
     }
 
     /**
      * 获取环境中词典
      */
-    public static List<String> findDicts(String projectId) {
-        checkProjectExist(projectId);
+    public static List<String> findDicts() {
         List<String> dicts = new ArrayList<>();
-        if (!LocalFileUtil.createIfNil(getProjectDictPath(projectId))) {
+        if (!LocalFileUtil.createIfNil(DICT_DATA)) {
             return dicts;
         }
-        List<File> dictFiles = LocalFileUtil.list(getProjectDictPath(projectId));
+        List<File> dictFiles = LocalFileUtil.list(DICT_DATA);
         if (!CollectionUtils.isEmpty(dictFiles)) {
             for (File file : dictFiles) {
-                dicts.add(file.getName().replace(".json",""));
+                dicts.add(file.getName().replace(".json", ""));
             }
         }
         return dicts;
@@ -244,15 +235,11 @@ public class LocalDataUtil {
     /**
      * 创建词典
      */
-    public static boolean createDict(String projectId, String dictId) {
-        checkProjectExist(projectId);
-        if (!LocalFileUtil.createIfNil(getProjectDictPath(projectId))) {
+    public static boolean createDict(String dictId) {
+        if (!LocalFileUtil.createIfNil(DICT_DATA)) {
             return false;
         }
-        if (!StringUtils.hasText(projectId)) {
-            return false;
-        }
-        File file = new File(getProjectDictPath(projectId, dictId));
+        File file = new File(getProjectDictPath(dictId));
         if (file.exists()) {
             return true;
         }
@@ -269,29 +256,28 @@ public class LocalDataUtil {
     /**
      * 删除词典
      */
-    public static boolean deleteDict(String projectId, String dictId) {
-        return LocalFileUtil.delete(getProjectDictPath(projectId, dictId));
+    public static boolean deleteDict(String dictId) {
+        return LocalFileUtil.delete(getProjectDictPath(dictId));
     }
 
 
     /**
      * 清空词典
      */
-    public static boolean dropDict(String projectId) {
-        return LocalFileUtil.forceDelete(getProjectDictPath(projectId));
+    public static boolean dropDict() {
+        return LocalFileUtil.forceDelete(DICT_DATA);
     }
 
     /**
      * 获取环境中词条
      */
-    public static Map<String, DictItem> findDictItems(String projectId, String dictId) {
-        checkProjectExist(projectId);
+    public static Map<String, DictItem> findDictItems(String dictId) {
         Map<String, DictItem> dictItemMap = new HashMap<>();
-        if (!LocalFileUtil.createIfNil(getProjectDictPath(projectId))) {
+        if (!LocalFileUtil.createIfNil(DICT_DATA)) {
             return dictItemMap;
         }
         String dictItemJson = "";
-        File file = new File(getProjectDictPath(projectId, dictId));
+        File file = new File(getProjectDictPath(dictId));
         if (!file.exists()) {
             logger.debug("词典:[{}] 不存在", dictId);
             throw new UnCreatedFileException("词典不存在");
@@ -311,18 +297,16 @@ public class LocalDataUtil {
     /**
      * 写入词典
      */
-    public static boolean writeDict(String projectId, String dictId, String dictItemJson) {
-        checkProjectExist(projectId);
-        return LocalFileUtil.writeStringToFile(getProjectDictPath(projectId, dictId), dictItemJson);
+    public static boolean writeDict(String dictId, String dictItemJson) {
+        return LocalFileUtil.writeStringToFile(getProjectDictPath(dictId), dictItemJson);
     }
 
     /**
      * 清空词条
      */
-    public static boolean dropDictItem(String projectId, String dictId) {
-        return LocalFileUtil.delete(getProjectDictPath(projectId, dictId));
+    public static boolean dropDictItem(String dictId) {
+        return LocalFileUtil.delete(getProjectDictPath(dictId));
     }
-
 
 
     /**
@@ -354,13 +338,13 @@ public class LocalDataUtil {
         List<File> findTableSchemaFiles = LocalFileUtil.list(getProjectTableSchemaFile(projectId));
         if (!CollectionUtils.isEmpty(findTableSchemaFiles)) {
             for (File file : findTableSchemaFiles) {
-                tableSchemas.add(file.getName().replace(".json",""));
+                tableSchemas.add(file.getName().replace(".json", ""));
             }
         }
         return tableSchemas;
     }
 
-    
+
     /**
      * 删除 TableSchema
      */
@@ -438,7 +422,7 @@ public class LocalDataUtil {
         List<File> findHttpRequestsFiles = LocalFileUtil.list(getProjectHttpRequestFile(projectId));
         if (!CollectionUtils.isEmpty(findHttpRequestsFiles)) {
             for (File file : findHttpRequestsFiles) {
-                httpRequests.add(file.getName().replace(".json",""));
+                httpRequests.add(file.getName().replace(".json", ""));
             }
         }
         return httpRequests;
