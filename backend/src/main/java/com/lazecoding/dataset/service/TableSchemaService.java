@@ -10,6 +10,7 @@ import com.lazecoding.dataset.core.schema.TableSchemaParser;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,13 +28,16 @@ public class TableSchemaService {
     /**
      * 根据 SQL 创建 TableSchema
      */
-    public TableSchema sqlParser(String projectId, String sql) {
+    public TableSchema sqlParser(String projectId, String tableSchemaId, String sql) {
         // 先检查项目是否存在
         LocalDataUtil.checkProjectExist(projectId);
         // 解析
         TableSchema tableSchema = TableSchemaParser.parserFromSql(sql);
         if (!ObjectUtils.isEmpty(tableSchema)) {
-            this.add(projectId,tableSchema);
+            if (!StringUtils.hasText(tableSchemaId)) {
+                tableSchemaId = tableSchema.getTableName() + "_" + System.currentTimeMillis();
+            }
+            this.write(projectId, tableSchemaId, tableSchema);
         }
         return tableSchema;
     }
@@ -52,27 +56,13 @@ public class TableSchemaService {
         return LocalDataUtil.findTableSchemaFile(projectId, tableSchemaId);
     }
 
-
     /**
-     * 新增
+     * 写入
      */
-    public String add(String projectId, TableSchema tableSchema) {
-        String tableSchemaJson = JsonUtil.GSON.toJson(tableSchema);
-        String tableSchemaId = tableSchema.getTableName() + "_" + System.currentTimeMillis();
-        if (LocalDataUtil.writeTableSchema(projectId, tableSchemaId, tableSchemaJson)) {
-            return tableSchemaId;
-        }
-        return "";
-    }
-
-    /**
-     * 修改
-     */
-    public boolean modify(String projectId, String tableSchemaId, TableSchema tableSchema) {
+    public boolean write(String projectId, String tableSchemaId, TableSchema tableSchema) {
         String tableSchemaJson = JsonUtil.GSON.toJson(tableSchema);
         return LocalDataUtil.writeTableSchema(projectId, tableSchemaId, tableSchemaJson);
     }
-
 
     /**
      * 删除

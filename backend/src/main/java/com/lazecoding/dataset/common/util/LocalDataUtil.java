@@ -2,6 +2,7 @@ package com.lazecoding.dataset.common.util;
 
 import com.google.gson.reflect.TypeToken;
 import com.lazecoding.dataset.common.exceptions.UnCreatedFileException;
+import com.lazecoding.dataset.core.http.HttpRequest;
 import com.lazecoding.dataset.core.schema.TableSchema;
 import com.lazecoding.dataset.model.DictItem;
 import com.lazecoding.dataset.model.Rule;
@@ -406,6 +407,90 @@ public class LocalDataUtil {
             }.getType());
         }
         return tableSchema;
+    }
+
+
+    /**
+     * 项目 HttpRequest 路径
+     */
+    private static String getProjectHttpRequestFile(String projectId) {
+        // id.json
+        return HTTP_REQUEST_DATA.replace(PROJECT_ID_TAG, projectId);
+    }
+
+    /**
+     * 项目 HttpRequest 路径
+     */
+    private static String getProjectHttpRequestFile(String projectId, String httpRequestId) {
+        // id.json
+        return (HTTP_REQUEST_DATA.replace(PROJECT_ID_TAG, projectId)) + httpRequestId + ".json";
+    }
+
+    /**
+     * 获取项目中的 HttpRequest
+     */
+    public static List<String> findHttpRequests(String projectId) {
+        checkProjectExist(projectId);
+        List<String> httpRequests = new ArrayList<>();
+        if (!LocalFileUtil.createIfNil(getProjectHttpRequestFile(projectId))) {
+            return httpRequests;
+        }
+        List<File> findHttpRequestsFiles = LocalFileUtil.list(getProjectHttpRequestFile(projectId));
+        if (!CollectionUtils.isEmpty(findHttpRequestsFiles)) {
+            for (File file : findHttpRequestsFiles) {
+                httpRequests.add(file.getName().replace(".json",""));
+            }
+        }
+        return httpRequests;
+    }
+
+
+    /**
+     * 删除 HttpRequest
+     */
+    public static boolean deleteHttpRequest(String projectId, String httpRequestId) {
+        return LocalFileUtil.delete(getProjectHttpRequestFile(projectId, httpRequestId));
+    }
+
+
+    /**
+     * 清空 HttpRequest
+     */
+    public static boolean dropHttpRequest(String projectId) {
+        return LocalFileUtil.forceDelete(getProjectHttpRequestFile(projectId));
+    }
+
+    /**
+     * 写入 HttpRequest
+     */
+    public static boolean writeHttpRequest(String projectId, String httpRequestId, String httpRequestJson) {
+        checkProjectExist(projectId);
+        return LocalFileUtil.writeStringToFile(getProjectHttpRequestFile(projectId, httpRequestId), httpRequestJson);
+    }
+
+
+    /**
+     * 获取 TableSchema
+     */
+    public static HttpRequest findHttpRequestFile(String projectId, String httpRequestId) {
+        // 先判断项目有没有创建
+        checkProjectExist(projectId);
+        String httpRequestJson = "";
+        File file = new File(getProjectHttpRequestFile(projectId, httpRequestId));
+        if (!file.exists()) {
+            return null;
+        }
+        try {
+            httpRequestJson = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            logger.error("读取文件异常", e);
+        }
+        HttpRequest httpRequest = null;
+        if (StringUtils.hasText(httpRequestJson)) {
+            httpRequest = JsonUtil.GSON.fromJson(httpRequestJson, new TypeToken<HttpRequest>() {
+            }.getType());
+        }
+        return httpRequest;
     }
 
 

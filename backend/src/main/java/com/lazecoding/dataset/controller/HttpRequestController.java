@@ -3,9 +3,8 @@ package com.lazecoding.dataset.controller;
 import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.common.exceptions.UnCreatedFileException;
 import com.lazecoding.dataset.common.mvc.ResultBean;
-import com.lazecoding.dataset.core.schema.SchemaException;
-import com.lazecoding.dataset.core.schema.TableSchema;
-import com.lazecoding.dataset.service.TableSchemaService;
+import com.lazecoding.dataset.core.http.HttpRequest;
+import com.lazecoding.dataset.service.HttpRequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,54 +18,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 /**
- * TableSchema
+ * HttpRequest
  *
  * @author lazecoding
  */
 @Controller
-@RequestMapping("mick/schema")
-public class TableSchemaController {
-
-    private static final Logger logger = LoggerFactory.getLogger(TableSchemaController.class);
+@RequestMapping("mick/http")
+public class HttpRequestController {
 
     @Autowired
-    private TableSchemaService tableSchemaService;
+    private HttpRequestService httpRequestService;
 
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequestController.class);
+    
     /**
-     * 根据 SQL 创建 TableSchema
-     */
-    @RequestMapping("sql-parser")
-    @ResponseBody
-    public ResultBean sqlParser(String projectId, String tableSchemaId, String sql) {
-        if (!StringUtils.hasText(projectId)) {
-            throw new NilParamException("projectId is nil.");
-        }
-        if (!StringUtils.hasText(sql)) {
-            throw new NilParamException("sql is nil.");
-        }
-        ResultBean resultBean = ResultBean.getInstance();
-        boolean isSuccess = false;
-        String message = "";
-        try {
-            TableSchema tableSchema = tableSchemaService.sqlParser(projectId, tableSchemaId, sql);
-            resultBean.setValue(tableSchema);
-            isSuccess = true;
-        } catch (NilParamException | SchemaException | UnCreatedFileException e) {
-            isSuccess = false;
-            message = e.getMessage();
-            logger.error("解析 SQL 异常", e);
-        } catch (Exception e) {
-            isSuccess = false;
-            message = "系统异常";
-            logger.error("系统异常", e);
-        }
-        resultBean.setSuccess(isSuccess);
-        resultBean.setMessage(message);
-        return resultBean;
-    }
-
-    /**
-     * 获取 TableSchema 列表
+     * 获取 HttpRequest 列表
      */
     @RequestMapping("list")
     @ResponseBody
@@ -78,13 +44,13 @@ public class TableSchemaController {
         boolean isSuccess = false;
         String message = "";
         try {
-            List<String> tableSchemas = tableSchemaService.list(projectId);
-            resultBean.setValue(tableSchemas);
+            List<String> httpRequests = httpRequestService.list(projectId);
+            resultBean.setValue(httpRequests);
             isSuccess = true;
         } catch (UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
-            logger.error("获取 TableSchema 列表失败", e);
+            logger.error("获取 httpRequest 列表失败", e);
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";
@@ -96,28 +62,28 @@ public class TableSchemaController {
     }
 
     /**
-     * 获取 TableSchema
+     * 获取 HttpRequest
      */
     @RequestMapping("find")
     @ResponseBody
-    public ResultBean find(String projectId, String tableSchemaId) {
+    public ResultBean find(String projectId, String httpRequestId) {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
-        if (!StringUtils.hasText(tableSchemaId)) {
-            throw new NilParamException("tableSchemaId is nil.");
+        if (!StringUtils.hasText(httpRequestId)) {
+            throw new NilParamException("httpRequestId is nil.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;
         String message = "";
         try {
-            TableSchema tableSchema = tableSchemaService.find(projectId, tableSchemaId);
-            resultBean.setValue(tableSchema);
+            HttpRequest httpRequest = httpRequestService.find(projectId, httpRequestId);
+            resultBean.setValue(httpRequest);
             isSuccess = true;
         } catch (UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
-            logger.error("删除 TableSchema 失败", e);
+            logger.error("删除 httpRequest 失败", e);
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";
@@ -129,29 +95,29 @@ public class TableSchemaController {
     }
 
     /**
-     * 写入 TableSchema
+     * 写入 HttpRequest
      */
     @RequestMapping("write")
     @ResponseBody
-    public ResultBean write(String projectId, String tableSchemaId, @RequestBody TableSchema tableSchema) {
+    public ResultBean write(String projectId, String httpRequestId, @RequestBody HttpRequest httpRequest) {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
-        if (!StringUtils.hasText(tableSchemaId)) {
-            throw new NilParamException("tableSchemaId is nil.");
+        if (!StringUtils.hasText(httpRequestId)) {
+            throw new NilParamException("httpRequestId is nil.");
         }
-        if (ObjectUtils.isEmpty(tableSchema)) {
-            throw new NilParamException("tableSchema is nil.");
+        if (ObjectUtils.isEmpty(httpRequest)) {
+            throw new NilParamException("httpRequest is nil.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;
         String message = "";
         try {
-            isSuccess = tableSchemaService.write(projectId, tableSchemaId, tableSchema);
+            isSuccess = httpRequestService.write(projectId, httpRequestId, httpRequest);
         } catch (UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
-            logger.error("新增 TableSchema 失败", e);
+            logger.error("新增 HttpRequest 失败", e);
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";
@@ -163,26 +129,26 @@ public class TableSchemaController {
     }
 
     /**
-     * 删除 TableSchema
+     * 删除 HttpRequest
      */
     @RequestMapping("delete")
     @ResponseBody
-    public ResultBean delete(String projectId, String tableSchemaId) {
+    public ResultBean delete(String projectId, String httpRequestId) {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
-        if (!StringUtils.hasText(tableSchemaId)) {
-            throw new NilParamException("tableSchemaId is nil.");
+        if (!StringUtils.hasText(httpRequestId)) {
+            throw new NilParamException("httpRequestId is nil.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;
         String message = "";
         try {
-            isSuccess = tableSchemaService.delete(projectId, tableSchemaId);
+            isSuccess = httpRequestService.delete(projectId, httpRequestId);
         } catch (UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
-            logger.error("删除 TableSchema 失败", e);
+            logger.error("删除 HttpRequest 失败", e);
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";
@@ -194,7 +160,7 @@ public class TableSchemaController {
     }
 
     /**
-     * 清空 TableSchema
+     * 清空 HttpRequest
      */
     @RequestMapping("drop")
     @ResponseBody
@@ -206,11 +172,11 @@ public class TableSchemaController {
         boolean isSuccess = false;
         String message = "";
         try {
-            isSuccess = tableSchemaService.drop(projectId);
+            isSuccess = httpRequestService.drop(projectId);
         } catch (UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
-            logger.error("清空 TableSchema 失败", e);
+            logger.error("清空 HttpRequest 失败", e);
         } catch (Exception e) {
             isSuccess = false;
             message = "系统异常";
@@ -221,36 +187,8 @@ public class TableSchemaController {
         return resultBean;
     }
 
-    /**
-     * 预览结果
-     *
-     * @return
-     */
-    @RequestMapping("preview")
-    @ResponseBody
-    public ResultBean preview(@RequestBody TableSchema tableSchema) {
-        if (ObjectUtils.isEmpty(tableSchema)) {
-            throw new NilParamException("tableSchema is nil.");
-        }
-        ResultBean resultBean = ResultBean.getInstance();
-        boolean isSuccess = false;
-        String message = "";
-        try {
-            String result = tableSchemaService.preview(tableSchema);
-            resultBean.setValue(result);
-            isSuccess = true;
-        } catch (NilParamException | SchemaException | UnCreatedFileException e) {
-            isSuccess = false;
-            message = e.getMessage();
-            logger.error("预览结果失败", e);
-        } catch (Exception e) {
-            isSuccess = false;
-            message = "系统异常";
-            logger.error("系统异常", e);
-        }
-        resultBean.setSuccess(isSuccess);
-        resultBean.setMessage(message);
-        return resultBean;
-    }
+
+
+
 
 }
