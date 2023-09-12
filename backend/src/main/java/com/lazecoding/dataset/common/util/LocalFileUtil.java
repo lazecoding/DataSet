@@ -85,7 +85,6 @@ public class LocalFileUtil {
      * 按行读取
      */
     public static void lineIterator(File file, int batch, LineProcessor lineProcessor) {
-        new ArrayList(1);
         LineIterator lineIterator = null;
 
         try {
