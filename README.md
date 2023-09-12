@@ -18,13 +18,13 @@
 -- bin
 -- config
 -- data
-    -- <projectId>
-        -- mock
+    -- mock
+        -- <projectId>
             -- http_request
             -- table_schema
-        -- source
-            -- dict
-            -- rule
+    -- source
+        -- dict
+        -- rule
 -- result
     -- <projectId>
         -- table_schema
