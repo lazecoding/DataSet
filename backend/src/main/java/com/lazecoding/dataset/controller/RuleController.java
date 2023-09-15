@@ -7,6 +7,7 @@ import com.lazecoding.dataset.common.mvc.ResultBean;
 import com.lazecoding.dataset.common.util.LocalDataUtil;
 import com.lazecoding.dataset.model.Rule;
 import com.lazecoding.dataset.service.RuleService;
+import com.mifmif.common.regex.Generex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,6 +171,34 @@ public class RuleController {
         resultBean.setMessage(message);
         return resultBean;
     }
+
+    /**
+     * 预览
+     */
+    @RequestMapping("preview")
+    @ResponseBody
+    public ResultBean preview(String rule) {
+        if (!StringUtils.hasText(rule)) {
+            throw new NilParamException("rule is nil.");
+        }
+        ResultBean resultBean = ResultBean.getInstance();
+        String message = "";
+        boolean isSuccess = false;
+        try {
+            Generex generex = new Generex(rule);
+            String randomStr = generex.random();
+            resultBean.setValue(randomStr);
+            isSuccess = true;
+        } catch (Exception e) {
+            isSuccess = false;
+            message = "系统异常";
+            logger.error("预览规则", e);
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
 
 
 }
