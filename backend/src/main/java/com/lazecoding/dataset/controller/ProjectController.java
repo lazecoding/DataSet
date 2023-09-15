@@ -3,6 +3,7 @@ package com.lazecoding.dataset.controller;
 import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.common.mvc.ResultBean;
 import com.lazecoding.dataset.common.util.LocalDataUtil;
+import com.lazecoding.dataset.common.util.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -55,6 +56,9 @@ public class ProjectController {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
         ResultBean resultBean = ResultBean.getInstance();
         String message = "";
         boolean isSuccess = false;
@@ -78,6 +82,9 @@ public class ProjectController {
     public ResultBean delete(String projectId) {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         String message = "";

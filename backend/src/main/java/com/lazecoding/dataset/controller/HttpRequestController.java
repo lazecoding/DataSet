@@ -3,6 +3,7 @@ package com.lazecoding.dataset.controller;
 import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.common.exceptions.UnCreatedFileException;
 import com.lazecoding.dataset.common.mvc.ResultBean;
+import com.lazecoding.dataset.common.util.ValidateUtil;
 import com.lazecoding.dataset.core.http.HttpRequest;
 import com.lazecoding.dataset.service.HttpRequestService;
 import org.slf4j.Logger;
@@ -40,6 +41,9 @@ public class HttpRequestController {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;
         String message = "";
@@ -70,8 +74,14 @@ public class HttpRequestController {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
         if (!StringUtils.hasText(httpRequestId)) {
             throw new NilParamException("httpRequestId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(httpRequestId)) {
+            throw new NilParamException("httpRequestId format error.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;
@@ -103,8 +113,14 @@ public class HttpRequestController {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
         if (!StringUtils.hasText(httpRequestId)) {
             throw new NilParamException("httpRequestId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(httpRequestId)) {
+            throw new NilParamException("httpRequestId format error.");
         }
         if (ObjectUtils.isEmpty(httpRequest)) {
             throw new NilParamException("httpRequest is nil.");
@@ -137,8 +153,14 @@ public class HttpRequestController {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
         if (!StringUtils.hasText(httpRequestId)) {
             throw new NilParamException("httpRequestId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(httpRequestId)) {
+            throw new NilParamException("httpRequestId format error.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;
@@ -167,6 +189,9 @@ public class HttpRequestController {
     public ResultBean drop(String projectId) {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;

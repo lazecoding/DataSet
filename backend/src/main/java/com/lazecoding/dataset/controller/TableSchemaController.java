@@ -3,6 +3,7 @@ package com.lazecoding.dataset.controller;
 import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.common.exceptions.UnCreatedFileException;
 import com.lazecoding.dataset.common.mvc.ResultBean;
+import com.lazecoding.dataset.common.util.ValidateUtil;
 import com.lazecoding.dataset.core.schema.SchemaException;
 import com.lazecoding.dataset.core.schema.TableSchema;
 import com.lazecoding.dataset.service.TableSchemaService;
@@ -41,6 +42,9 @@ public class TableSchemaController {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
         if (!StringUtils.hasText(sql)) {
             throw new NilParamException("sql is nil.");
         }
@@ -74,6 +78,9 @@ public class TableSchemaController {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;
         String message = "";
@@ -104,8 +111,14 @@ public class TableSchemaController {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
         if (!StringUtils.hasText(tableSchemaId)) {
             throw new NilParamException("tableSchemaId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(tableSchemaId)) {
+            throw new NilParamException("tableSchemaId format error.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;
@@ -137,8 +150,14 @@ public class TableSchemaController {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
         if (!StringUtils.hasText(tableSchemaId)) {
             throw new NilParamException("tableSchemaId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(tableSchemaId)) {
+            throw new NilParamException("tableSchemaId format error.");
         }
         if (ObjectUtils.isEmpty(tableSchema)) {
             throw new NilParamException("tableSchema is nil.");
@@ -171,8 +190,14 @@ public class TableSchemaController {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
         if (!StringUtils.hasText(tableSchemaId)) {
             throw new NilParamException("tableSchemaId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(tableSchemaId)) {
+            throw new NilParamException("tableSchemaId format error.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;
@@ -201,6 +226,9 @@ public class TableSchemaController {
     public ResultBean drop(String projectId) {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         boolean isSuccess = false;

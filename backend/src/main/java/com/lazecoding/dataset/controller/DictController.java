@@ -4,6 +4,7 @@ import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.common.exceptions.NilValueException;
 import com.lazecoding.dataset.common.exceptions.UnCreatedFileException;
 import com.lazecoding.dataset.common.mvc.ResultBean;
+import com.lazecoding.dataset.common.util.ValidateUtil;
 import com.lazecoding.dataset.model.DictItem;
 import com.lazecoding.dataset.service.DictService;
 import org.slf4j.Logger;
@@ -66,6 +67,9 @@ public class DictController {
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(dictId)) {
+            throw new NilParamException("dictId format error.");
+        }
         ResultBean resultBean = ResultBean.getInstance();
         String message = "";
         boolean isSuccess = false;
@@ -93,6 +97,9 @@ public class DictController {
     public ResultBean deleteDict(String dictId) {
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(dictId)) {
+            throw new NilParamException("dictId format error.");
         }
         ResultBean resultBean = ResultBean.getInstance();
         String message = "";
@@ -141,6 +148,9 @@ public class DictController {
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(dictId)) {
+            throw new NilParamException("dictId format error.");
+        }
         String message = "";
         boolean isSuccess = false;
         try {
@@ -172,6 +182,9 @@ public class DictController {
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(dictId)) {
+            throw new NilParamException("dictId format error.");
+        }
         if (!StringUtils.hasText(value)) {
             throw new NilParamException("value is nil.");
         }
@@ -202,6 +215,9 @@ public class DictController {
         ResultBean resultBean = ResultBean.getInstance();
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(dictId)) {
+            throw new NilParamException("dictId format error.");
         }
         if (!StringUtils.hasText(id)) {
             throw new NilParamException("id is nil.");
@@ -237,6 +253,9 @@ public class DictController {
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
         }
+        if (!ValidateUtil.isEnglishNumberLine(dictId)) {
+            throw new NilParamException("dictId format error.");
+        }
         if (!StringUtils.hasText(id)) {
             throw new NilParamException("id is nil.");
         }
@@ -267,6 +286,9 @@ public class DictController {
         ResultBean resultBean = ResultBean.getInstance();
         if (!StringUtils.hasText(dictId)) {
             throw new NilParamException("dictId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(dictId)) {
+            throw new NilParamException("dictId format error.");
         }
         String message = "";
         boolean isSuccess = false;
