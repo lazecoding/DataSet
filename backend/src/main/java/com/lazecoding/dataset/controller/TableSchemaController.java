@@ -281,4 +281,42 @@ public class TableSchemaController {
         return resultBean;
     }
 
+    /**
+     * 根据 TableSchema 生成结果文件
+     */
+    @RequestMapping("generator")
+    @ResponseBody
+    public ResultBean generator(String projectId, String tableSchemaId) {
+        if (!StringUtils.hasText(projectId)) {
+            throw new NilParamException("projectId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
+        if (!StringUtils.hasText(tableSchemaId)) {
+            throw new NilParamException("tableSchemaId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(tableSchemaId)) {
+            throw new NilParamException("tableSchemaId format error.");
+        }
+        ResultBean resultBean = ResultBean.getInstance();
+        boolean isSuccess = false;
+        String message = "";
+        try {
+            isSuccess = tableSchemaService.generator(projectId, tableSchemaId);
+        } catch (UnCreatedFileException e) {
+            isSuccess = false;
+            message = e.getMessage();
+            logger.error("生成 TableSchema 结果文件失败", e);
+        } catch (Exception e) {
+            isSuccess = false;
+            message = "系统异常";
+            logger.error("系统异常", e);
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
+
 }

@@ -94,4 +94,27 @@ public class TableSchemaService {
         return SqlProducer.buildInsertSql(tableSchema, dataList);
     }
 
+    /**
+     * 生成
+     */
+    public boolean generator(String projectId, String tableSchemaId) {
+        TableSchema tableSchema = this.find(projectId, tableSchemaId);
+        if (ObjectUtils.isEmpty(tableSchema)) {
+            return false;
+        }
+        // 生成模拟数据
+        List<Map<String, Object>> dataList = DataProducer.generateData(tableSchema);
+        if (CollectionUtils.isEmpty(dataList)) {
+            return false;
+        }
+        // 生成 SQL
+        String insertSql = SqlProducer.buildInsertSql(tableSchema, dataList);
+        if (!StringUtils.hasText(insertSql)) {
+            return false;
+        }
+        // 写入文件
+        return LocalDataUtil.writeTableSchemaResult(projectId, tableSchemaId, insertSql);
+    }
+
+
 }

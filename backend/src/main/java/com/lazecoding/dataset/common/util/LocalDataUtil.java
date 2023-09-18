@@ -325,6 +325,15 @@ public class LocalDataUtil {
         return (TABLE_SCHEMA_DATA.replace(PROJECT_ID_TAG, projectId)) + tableSchemaId + ".json";
     }
 
+    /**
+     * 项目 TableSchema 路径
+     */
+    private static String getProjectTableSchemaResultFile(String projectId, String tableSchemaId) {
+        // id.json
+        return (TABLE_SCHEMA_RESULT.replace(PROJECT_ID_TAG, projectId)) + tableSchemaId + ".sql";
+    }
+
+
 
     /**
      * 获取项目中的 TableSchema
@@ -367,6 +376,23 @@ public class LocalDataUtil {
         checkProjectExist(projectId);
         return LocalFileUtil.writeStringToFile(getProjectTableSchemaFile(projectId, tableSchemaId), tableSchemaJson);
     }
+
+
+    /**
+     * 生成 TableSchema 结果文件
+     */
+    public static boolean writeTableSchemaResult(String projectId, String tableSchemaId, String dataStr) {
+        return LocalFileUtil.writeStringToFile(getProjectTableSchemaResultFile(projectId, tableSchemaId), dataStr);
+    }
+
+    /**
+     * 删除 TableSchema 结果文件
+     */
+    public static boolean deleteTableSchemaResult(String projectId, String tableSchemaId) {
+        return LocalFileUtil.delete(getProjectTableSchemaResultFile(projectId, tableSchemaId));
+    }
+
+
 
 
     /**
