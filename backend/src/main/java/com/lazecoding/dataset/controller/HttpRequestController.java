@@ -1,5 +1,6 @@
 package com.lazecoding.dataset.controller;
 
+import com.lazecoding.dataset.bean.HttpRequestQueryBean;
 import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.common.exceptions.UnCreatedFileException;
 import com.lazecoding.dataset.common.mvc.ResultBean;
@@ -109,7 +110,54 @@ public class HttpRequestController {
      */
     @RequestMapping("write")
     @ResponseBody
-    public ResultBean write(String projectId, String httpRequestId, @RequestBody HttpRequest httpRequest) {
+    public ResultBean write(@RequestBody HttpRequestQueryBean httpRequestQueryBean) {
+        if (ObjectUtils.isEmpty(httpRequestQueryBean)) {
+            throw new NilParamException("query json is nil.");
+        }
+        String projectId = httpRequestQueryBean.getProjectId();
+        String httpRequestId = httpRequestQueryBean.getHttpRequestId();
+        HttpRequest httpRequest = httpRequestQueryBean.getHttpRequest();
+        if (!StringUtils.hasText(projectId)) {
+            throw new NilParamException("projectId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
+        if (!StringUtils.hasText(httpRequestId)) {
+            throw new NilParamException("httpRequestId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(httpRequestId)) {
+            throw new NilParamException("httpRequestId format error.");
+        }
+        if (ObjectUtils.isEmpty(httpRequest)) {
+            throw new NilParamException("httpRequest is nil.");
+        }
+        ResultBean resultBean = ResultBean.getInstance();
+        boolean isSuccess = false;
+        String message = "";
+        try {
+            isSuccess = httpRequestService.write(projectId, httpRequestId, httpRequest);
+        } catch (UnCreatedFileException e) {
+            isSuccess = false;
+            message = e.getMessage();
+            logger.error("新增 HttpRequest 失败", e);
+        } catch (Exception e) {
+            isSuccess = false;
+            message = "系统异常";
+            logger.error("系统异常", e);
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
+
+    /**
+     * 写入 HttpRequest
+     */
+    @RequestMapping("write0")
+    @ResponseBody
+    public ResultBean write0(String projectId, String httpRequestId, @RequestBody HttpRequest httpRequest) {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
