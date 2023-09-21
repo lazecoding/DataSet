@@ -1,5 +1,6 @@
 package com.lazecoding.dataset.controller;
 
+import com.lazecoding.dataset.bean.TableSchemaQueryBean;
 import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.common.exceptions.UnCreatedFileException;
 import com.lazecoding.dataset.common.mvc.ResultBean;
@@ -141,12 +142,60 @@ public class TableSchemaController {
         return resultBean;
     }
 
+
     /**
      * 写入 TableSchema
      */
     @RequestMapping("write")
     @ResponseBody
-    public ResultBean write(String projectId, String tableSchemaId, @RequestBody TableSchema tableSchema) {
+    public ResultBean write(@RequestBody TableSchemaQueryBean tableSchemaQueryBean) {
+        if (ObjectUtils.isEmpty(tableSchemaQueryBean)) {
+            throw new NilParamException("query json is nil.");
+        }
+        String projectId = tableSchemaQueryBean.getProjectId();
+        String tableSchemaId = tableSchemaQueryBean.getTableSchemaId();
+        TableSchema tableSchema = tableSchemaQueryBean.getTableSchema();
+        if (!StringUtils.hasText(projectId)) {
+            throw new NilParamException("projectId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
+        if (!StringUtils.hasText(tableSchemaId)) {
+            throw new NilParamException("tableSchemaId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(tableSchemaId)) {
+            throw new NilParamException("tableSchemaId format error.");
+        }
+        if (ObjectUtils.isEmpty(tableSchema)) {
+            throw new NilParamException("tableSchema is nil.");
+        }
+        ResultBean resultBean = ResultBean.getInstance();
+        boolean isSuccess = false;
+        String message = "";
+        try {
+            isSuccess = tableSchemaService.write(projectId, tableSchemaId, tableSchema);
+        } catch (UnCreatedFileException e) {
+            isSuccess = false;
+            message = e.getMessage();
+            logger.error("新增 TableSchema 失败", e);
+        } catch (Exception e) {
+            isSuccess = false;
+            message = "系统异常";
+            logger.error("系统异常", e);
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
+
+    /**
+     * 写入 TableSchema
+     */
+    @RequestMapping("write0")
+    @ResponseBody
+    public ResultBean write0(String projectId, String tableSchemaId, @RequestBody TableSchema tableSchema) {
         if (!StringUtils.hasText(projectId)) {
             throw new NilParamException("projectId is nil.");
         }
