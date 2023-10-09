@@ -21,6 +21,7 @@
         <druid.version>1.2.12</druid.version>
         <easyexcel.version>3.1.1</easyexcel.version>
         <commons-io.version>2.11.0</commons-io.version>
+        <okhttp3.version>4.11.0</okhttp3.version>
     </properties>
     <dependencies>
         <dependency>
@@ -88,6 +89,13 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp3.version}</version>
         </dependency>
     </dependencies>
 
