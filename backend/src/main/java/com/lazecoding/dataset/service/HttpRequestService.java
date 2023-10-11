@@ -1,12 +1,18 @@
 package com.lazecoding.dataset.service;
 
+import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.common.util.JsonUtil;
 import com.lazecoding.dataset.common.util.LocalDataUtil;
 import com.lazecoding.dataset.core.http.HttpRequest;
+import com.lazecoding.dataset.core.producer.DataProducer;
+import com.lazecoding.dataset.core.producer.HttpProducer;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 词典
@@ -50,6 +56,45 @@ public class HttpRequestService {
      */
     public boolean drop(String projectId) {
         return LocalDataUtil.dropHttpRequest(projectId);
+    }
+
+    /**
+     * 预览结果
+     */
+    public void preview(HttpRequest httpRequest) {
+        if (ObjectUtils.isEmpty(httpRequest) || !StringUtils.hasText(httpRequest.getUrl())
+                || !StringUtils.hasText(httpRequest.getMethod()) || httpRequest.getMockNum() <= 0) {
+            return;
+        }
+        // 预览一条数据
+        httpRequest.setMockNum(1);
+        this.doExecute(httpRequest);
+    }
+
+    /**
+     * 生成
+     */
+    public boolean generator(String projectId, String httpRequestId) {
+        HttpRequest httpRequest = this.find(projectId, httpRequestId);
+        if (ObjectUtils.isEmpty(httpRequest) || !StringUtils.hasText(httpRequest.getUrl())
+                || !StringUtils.hasText(httpRequest.getMethod()) || httpRequest.getMockNum() <= 0) {
+            return false;
+        }
+        return this.doExecute(httpRequest);
+    }
+
+    /**
+     * 执行
+     */
+    public boolean doExecute(HttpRequest httpRequest) {
+        if (ObjectUtils.isEmpty(httpRequest)) {
+            throw new NilParamException("httpRequest is nil");
+        }
+        // 1. 生产数据
+        List<Map<String, Object>> dataList = DataProducer.generateData(httpRequest);
+        // 2. 接口调用
+        HttpProducer.doExecute(httpRequest, dataList);
+        return true;
     }
 
 

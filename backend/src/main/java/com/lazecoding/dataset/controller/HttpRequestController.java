@@ -261,6 +261,78 @@ public class HttpRequestController {
     }
 
 
+    /**
+     * 预览结果
+     *
+     * @return
+     */
+    @RequestMapping("preview")
+    @ResponseBody
+    public ResultBean preview(@RequestBody HttpRequest httpRequest) {
+        if (ObjectUtils.isEmpty(httpRequest)) {
+            throw new NilParamException("httpRequest is nil.");
+        }
+        ResultBean resultBean = ResultBean.getInstance();
+        boolean isSuccess = false;
+        String message = "";
+        try {
+            httpRequestService.preview(httpRequest);
+            isSuccess = true;
+        } catch (NilParamException | UnCreatedFileException e) {
+            isSuccess = false;
+            message = e.getMessage();
+            logger.error("预览结果失败", e);
+        } catch (Exception e) {
+            isSuccess = false;
+            message = "系统异常";
+            logger.error("系统异常", e);
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
+
+    /**
+     * 执行 HttpRequest 生成数据
+     */
+    @RequestMapping("generator")
+    @ResponseBody
+    public ResultBean generator(String projectId, String httpRequestId) {
+        if (!StringUtils.hasText(projectId)) {
+            throw new NilParamException("projectId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(projectId)) {
+            throw new NilParamException("projectId format error.");
+        }
+        if (!StringUtils.hasText(httpRequestId)) {
+            throw new NilParamException("tableSchemaId is nil.");
+        }
+        if (!ValidateUtil.isEnglishNumberLine(httpRequestId)) {
+            throw new NilParamException("tableSchemaId format error.");
+        }
+        ResultBean resultBean = ResultBean.getInstance();
+        boolean isSuccess = false;
+        String message = "";
+        try {
+            isSuccess = httpRequestService.generator(projectId, httpRequestId);
+        } catch (NilParamException | UnCreatedFileException e) {
+            isSuccess = false;
+            message = e.getMessage();
+            logger.error("执行 HttpRequest 生成数据失败", e);
+        } catch (Exception e) {
+            isSuccess = false;
+            message = "系统异常";
+            logger.error("系统异常", e);
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
+
+
+
 
 
 
