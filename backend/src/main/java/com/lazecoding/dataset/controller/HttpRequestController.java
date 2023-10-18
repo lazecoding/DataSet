@@ -276,7 +276,8 @@ public class HttpRequestController {
         boolean isSuccess = false;
         String message = "";
         try {
-            httpRequestService.preview(httpRequest);
+            String result = httpRequestService.preview(httpRequest);
+            resultBean.setValue(result);
             isSuccess = true;
         } catch (NilParamException | UnCreatedFileException e) {
             isSuccess = false;

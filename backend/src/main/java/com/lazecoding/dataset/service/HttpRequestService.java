@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -61,14 +60,16 @@ public class HttpRequestService {
     /**
      * 预览结果
      */
-    public void preview(HttpRequest httpRequest) {
+    public String preview(HttpRequest httpRequest) {
         if (ObjectUtils.isEmpty(httpRequest) || !StringUtils.hasText(httpRequest.getUrl())
-                || !StringUtils.hasText(httpRequest.getMethod()) || httpRequest.getMockNum() <= 0) {
-            return;
+                || !StringUtils.hasText(httpRequest.getMethod())) {
+            throw new NilParamException("there is one or more params is nil");
         }
         // 预览一条数据
         httpRequest.setMockNum(1);
-        this.doExecute(httpRequest);
+        HttpProducer.CallbackInfo callbackInfo = new HttpProducer.CallbackInfo(true);
+        this.doExecute(httpRequest, callbackInfo);
+        return callbackInfo.getResponseStr();
     }
 
     /**
@@ -78,24 +79,23 @@ public class HttpRequestService {
         HttpRequest httpRequest = this.find(projectId, httpRequestId);
         if (ObjectUtils.isEmpty(httpRequest) || !StringUtils.hasText(httpRequest.getUrl())
                 || !StringUtils.hasText(httpRequest.getMethod()) || httpRequest.getMockNum() <= 0) {
-            return false;
+            throw new NilParamException("there is one or more params is nil");
         }
-        return this.doExecute(httpRequest);
+        return this.doExecute(httpRequest, null);
     }
 
     /**
      * 执行
      */
-    public boolean doExecute(HttpRequest httpRequest) {
+    public boolean doExecute(HttpRequest httpRequest, HttpProducer.CallbackInfo callbackInfo) {
         if (ObjectUtils.isEmpty(httpRequest)) {
             throw new NilParamException("httpRequest is nil");
         }
         // 1. 生产数据
         List<Map<String, Object>> dataList = DataProducer.generateData(httpRequest);
         // 2. 接口调用
-        HttpProducer.doExecute(httpRequest, dataList);
+        HttpProducer.doExecute(httpRequest, dataList, callbackInfo);
         return true;
     }
-
 
 }

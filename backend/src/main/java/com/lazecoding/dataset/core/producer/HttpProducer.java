@@ -21,7 +21,7 @@ public class HttpProducer {
     private HttpProducer() {
     }
 
-    public static void doExecute(HttpRequest httpRequest, List<Map<String, Object>> dataList) {
+    public static void doExecute(HttpRequest httpRequest, List<Map<String, Object>> dataList, HttpProducer.CallbackInfo callbackInfo) {
         if (ObjectUtils.isEmpty(httpRequest) || !StringUtils.hasText(httpRequest.getUrl())
                 || !StringUtils.hasText(httpRequest.getMethod()) || httpRequest.getMockNum() <= 0) {
             return;
@@ -32,30 +32,30 @@ public class HttpProducer {
             return;
         }
         if (httpMethodEnum.equals(HttpMethodEnum.GET)) {
-            handleGet(httpRequest, dataList);
+            handleGet(httpRequest, dataList, callbackInfo);
         } else if (httpMethodEnum.equals(HttpMethodEnum.POST)) {
             HttpRequest.Body body = httpRequest.getBody();
             if (!ObjectUtils.isEmpty(body)) {
                 HttpBodyTypeEnum httpBodyTypeEnum = HttpBodyTypeEnum.getEnumByValue(body.getType());
                 if (!ObjectUtils.isEmpty(httpBodyTypeEnum)) {
                     if (httpBodyTypeEnum.equals(HttpBodyTypeEnum.NONE)) {
-                        handlePostNone(httpRequest);
+                        handlePostNone(httpRequest, callbackInfo);
                     }
                     if (httpBodyTypeEnum.equals(HttpBodyTypeEnum.RAW)) {
-                        handlePostRaw(httpRequest);
+                        handlePostRaw(httpRequest, callbackInfo);
                     }
                     if (httpBodyTypeEnum.equals(HttpBodyTypeEnum.FORM_DATA)) {
-                        handlePostFormData(httpRequest, dataList);
+                        handlePostFormData(httpRequest, dataList, callbackInfo);
                     }
                     if (httpBodyTypeEnum.equals(HttpBodyTypeEnum.X_WWW_FORM_URLENCODED)) {
-                        handlePostFormUrlencoded(httpRequest, dataList);
+                        handlePostFormUrlencoded(httpRequest, dataList, callbackInfo);
                     }
                 }
             }
         }
     }
 
-    private static void handleGet(HttpRequest httpRequest, List<Map<String, Object>> dataList) {
+    private static void handleGet(HttpRequest httpRequest, List<Map<String, Object>> dataList, HttpProducer.CallbackInfo callbackInfo) {
         String url = httpRequest.getUrl();
         List<HttpRequest.Header> headers = httpRequest.getHeaders();
         List<HttpRequest.Param> params = httpRequest.getParams();
@@ -93,9 +93,14 @@ public class HttpProducer {
                     .build();
             try {
                 Response response = HttpUtil.HTTP_CLIENT.newCall(request).execute();
+                boolean isSuccessful = response.isSuccessful();
+                String responseStr = response.body().string();
                 System.out.println(response);
-                System.out.println(response.isSuccessful());
-                System.out.println(response.body().string());
+                System.out.println("isSuccessful:" + isSuccessful + " responseStr:" + responseStr);
+                if (!ObjectUtils.isEmpty(callbackInfo) && callbackInfo.isPreview) {
+                    callbackInfo.setSuccess(isSuccessful);
+                    callbackInfo.setResponseStr(responseStr);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -103,7 +108,7 @@ public class HttpProducer {
         }
     }
 
-    private static void handlePostNone(HttpRequest httpRequest) {
+    private static void handlePostNone(HttpRequest httpRequest, HttpProducer.CallbackInfo callbackInfo) {
         String url = httpRequest.getUrl();
         List<HttpRequest.Header> headers = httpRequest.getHeaders();
         int mockNum = httpRequest.getMockNum();
@@ -125,9 +130,14 @@ public class HttpProducer {
                     .build();
             try {
                 Response response = HttpUtil.HTTP_CLIENT.newCall(request).execute();
+                boolean isSuccessful = response.isSuccessful();
+                String responseStr = response.body().string();
                 System.out.println(response);
-                System.out.println(response.isSuccessful());
-                System.out.println(response.body().string());
+                System.out.println("isSuccessful:" + isSuccessful + " responseStr:" + responseStr);
+                if (!ObjectUtils.isEmpty(callbackInfo) && callbackInfo.isPreview) {
+                    callbackInfo.setSuccess(isSuccessful);
+                    callbackInfo.setResponseStr(responseStr);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -135,7 +145,7 @@ public class HttpProducer {
         }
     }
 
-    private static void handlePostRaw(HttpRequest httpRequest) {
+    private static void handlePostRaw(HttpRequest httpRequest, HttpProducer.CallbackInfo callbackInfo) {
         String url = httpRequest.getUrl();
         List<HttpRequest.Header> headers = httpRequest.getHeaders();
         int mockNum = httpRequest.getMockNum();
@@ -158,9 +168,14 @@ public class HttpProducer {
                     .build();
             try {
                 Response response = HttpUtil.HTTP_CLIENT.newCall(request).execute();
+                boolean isSuccessful = response.isSuccessful();
+                String responseStr = response.body().string();
                 System.out.println(response);
-                System.out.println(response.isSuccessful());
-                System.out.println(response.body().string());
+                System.out.println("isSuccessful:" + isSuccessful + " responseStr:" + responseStr);
+                if (!ObjectUtils.isEmpty(callbackInfo) && callbackInfo.isPreview) {
+                    callbackInfo.setSuccess(isSuccessful);
+                    callbackInfo.setResponseStr(responseStr);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -168,7 +183,7 @@ public class HttpProducer {
         }
     }
 
-    private static void handlePostFormData(HttpRequest httpRequest, List<Map<String, Object>> dataList) {
+    private static void handlePostFormData(HttpRequest httpRequest, List<Map<String, Object>> dataList, HttpProducer.CallbackInfo callbackInfo) {
         String url = httpRequest.getUrl();
         List<HttpRequest.Header> headers = httpRequest.getHeaders();
         List<HttpRequest.Param> formData = httpRequest.getBody().getFormData();
@@ -208,9 +223,14 @@ public class HttpProducer {
                     .build();
             try {
                 Response response = HttpUtil.HTTP_CLIENT.newCall(request).execute();
+                boolean isSuccessful = response.isSuccessful();
+                String responseStr = response.body().string();
                 System.out.println(response);
-                System.out.println(response.isSuccessful());
-                System.out.println(response.body().string());
+                System.out.println("isSuccessful:" + isSuccessful + " responseStr:" + responseStr);
+                if (!ObjectUtils.isEmpty(callbackInfo) && callbackInfo.isPreview) {
+                    callbackInfo.setSuccess(isSuccessful);
+                    callbackInfo.setResponseStr(responseStr);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -218,7 +238,7 @@ public class HttpProducer {
         }
     }
 
-    private static void handlePostFormUrlencoded(HttpRequest httpRequest, List<Map<String, Object>> dataList) {
+    private static void handlePostFormUrlencoded(HttpRequest httpRequest, List<Map<String, Object>> dataList, HttpProducer.CallbackInfo callbackInfo) {
         String url = httpRequest.getUrl();
         List<HttpRequest.Header> headers = httpRequest.getHeaders();
         List<HttpRequest.Param> xWwwFormUrlencoded = httpRequest.getBody().getxWwwFormUrlencoded();
@@ -258,13 +278,70 @@ public class HttpProducer {
                     .build();
             try {
                 Response response = HttpUtil.HTTP_CLIENT.newCall(request).execute();
+                boolean isSuccessful = response.isSuccessful();
+                String responseStr = response.body().string();
                 System.out.println(response);
-                System.out.println(response.isSuccessful());
-                System.out.println(response.body().string());
+                System.out.println("isSuccessful:" + isSuccessful + " responseStr:" + responseStr);
+                if (!ObjectUtils.isEmpty(callbackInfo) && callbackInfo.isPreview) {
+                    callbackInfo.setSuccess(isSuccessful);
+                    callbackInfo.setResponseStr(responseStr);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             index++;
+        }
+    }
+
+    /**
+     * 回调信息
+     */
+    public static class CallbackInfo {
+
+        /**
+         * 是否预览（获取返回值）
+         */
+        private boolean isPreview = false;
+
+        /**
+         * 请求是否发送成功
+         */
+        private boolean isSuccess = false;
+
+        /**
+         * 请求响应结果
+         */
+        private String responseStr = "";
+
+        public CallbackInfo() {
+        }
+
+        public CallbackInfo(boolean isPreview) {
+            this.isPreview = isPreview;
+        }
+
+        public boolean isPreview() {
+            return isPreview;
+        }
+
+        public void setPreview(boolean preview) {
+            isPreview = preview;
+        }
+
+        public boolean isSuccess() {
+            return isSuccess;
+        }
+
+        public void setSuccess(boolean success) {
+            isSuccess = success;
+        }
+
+        public String getResponseStr() {
+            return responseStr;
+        }
+
+        public void setResponseStr(String responseStr) {
+            this.responseStr = responseStr;
         }
     }
 }
