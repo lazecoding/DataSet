@@ -30,3 +30,8 @@
         -- table_schema
 -- logs
 ```
+
+
+## License
+
+Keeper software is licenced under the Apache License Version 2.0. See the [LICENSE](https://github.com/lazecoding/DataSet/blob/main/LICENSE) file for details.
