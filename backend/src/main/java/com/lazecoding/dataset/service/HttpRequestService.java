@@ -60,7 +60,7 @@ public class HttpRequestService {
     /**
      * 预览结果
      */
-    public String preview(HttpRequest httpRequest) {
+    public HttpProducer.CallbackInfo preview(HttpRequest httpRequest) {
         if (ObjectUtils.isEmpty(httpRequest) || !StringUtils.hasText(httpRequest.getUrl())
                 || !StringUtils.hasText(httpRequest.getMethod())) {
             throw new NilParamException("there is one or more params is nil");
@@ -69,7 +69,7 @@ public class HttpRequestService {
         httpRequest.setMockNum(1);
         HttpProducer.CallbackInfo callbackInfo = new HttpProducer.CallbackInfo(true);
         this.doExecute(httpRequest, callbackInfo);
-        return callbackInfo.getResponseStr();
+        return callbackInfo;
     }
 
     /**

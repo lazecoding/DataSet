@@ -5,6 +5,8 @@ import com.lazecoding.dataset.core.http.HttpBodyTypeEnum;
 import com.lazecoding.dataset.core.http.HttpMethodEnum;
 import com.lazecoding.dataset.core.http.HttpRequest;
 import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -17,6 +19,8 @@ import java.util.*;
  * @author lazy
  */
 public class HttpProducer {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpProducer.class);
 
     private HttpProducer() {
     }
@@ -95,8 +99,7 @@ public class HttpProducer {
                 Response response = HttpUtil.HTTP_CLIENT.newCall(request).execute();
                 boolean isSuccessful = response.isSuccessful();
                 String responseStr = response.body().string();
-                System.out.println(response);
-                System.out.println("isSuccessful:" + isSuccessful + " responseStr:" + responseStr);
+                logger.debug("response:[{}] isSuccessful:[{}] responseStr:[{}]", response, isSuccessful, responseStr);
                 if (!ObjectUtils.isEmpty(callbackInfo) && callbackInfo.isPreview) {
                     callbackInfo.setSuccess(isSuccessful);
                     callbackInfo.setResponseStr(responseStr);
@@ -132,8 +135,7 @@ public class HttpProducer {
                 Response response = HttpUtil.HTTP_CLIENT.newCall(request).execute();
                 boolean isSuccessful = response.isSuccessful();
                 String responseStr = response.body().string();
-                System.out.println(response);
-                System.out.println("isSuccessful:" + isSuccessful + " responseStr:" + responseStr);
+                logger.debug("response:[{}] isSuccessful:[{}] responseStr:[{}]", response, isSuccessful, responseStr);
                 if (!ObjectUtils.isEmpty(callbackInfo) && callbackInfo.isPreview) {
                     callbackInfo.setSuccess(isSuccessful);
                     callbackInfo.setResponseStr(responseStr);
@@ -170,8 +172,7 @@ public class HttpProducer {
                 Response response = HttpUtil.HTTP_CLIENT.newCall(request).execute();
                 boolean isSuccessful = response.isSuccessful();
                 String responseStr = response.body().string();
-                System.out.println(response);
-                System.out.println("isSuccessful:" + isSuccessful + " responseStr:" + responseStr);
+                logger.debug("response:[{}] isSuccessful:[{}] responseStr:[{}]", response, isSuccessful, responseStr);
                 if (!ObjectUtils.isEmpty(callbackInfo) && callbackInfo.isPreview) {
                     callbackInfo.setSuccess(isSuccessful);
                     callbackInfo.setResponseStr(responseStr);
@@ -225,8 +226,7 @@ public class HttpProducer {
                 Response response = HttpUtil.HTTP_CLIENT.newCall(request).execute();
                 boolean isSuccessful = response.isSuccessful();
                 String responseStr = response.body().string();
-                System.out.println(response);
-                System.out.println("isSuccessful:" + isSuccessful + " responseStr:" + responseStr);
+                logger.debug("response:[{}] isSuccessful:[{}] responseStr:[{}]", response, isSuccessful, responseStr);
                 if (!ObjectUtils.isEmpty(callbackInfo) && callbackInfo.isPreview) {
                     callbackInfo.setSuccess(isSuccessful);
                     callbackInfo.setResponseStr(responseStr);
@@ -280,8 +280,7 @@ public class HttpProducer {
                 Response response = HttpUtil.HTTP_CLIENT.newCall(request).execute();
                 boolean isSuccessful = response.isSuccessful();
                 String responseStr = response.body().string();
-                System.out.println(response);
-                System.out.println("isSuccessful:" + isSuccessful + " responseStr:" + responseStr);
+                logger.debug("response:[{}] isSuccessful:[{}] responseStr:[{}]", response, isSuccessful, responseStr);
                 if (!ObjectUtils.isEmpty(callbackInfo) && callbackInfo.isPreview) {
                     callbackInfo.setSuccess(isSuccessful);
                     callbackInfo.setResponseStr(responseStr);

@@ -6,6 +6,7 @@ import com.lazecoding.dataset.common.exceptions.UnCreatedFileException;
 import com.lazecoding.dataset.common.mvc.ResultBean;
 import com.lazecoding.dataset.common.util.ValidateUtil;
 import com.lazecoding.dataset.core.http.HttpRequest;
+import com.lazecoding.dataset.core.producer.HttpProducer;
 import com.lazecoding.dataset.service.HttpRequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -276,9 +277,15 @@ public class HttpRequestController {
         boolean isSuccess = false;
         String message = "";
         try {
-            String result = httpRequestService.preview(httpRequest);
-            resultBean.setValue(result);
-            isSuccess = true;
+            HttpProducer.CallbackInfo callbackInfo = httpRequestService.preview(httpRequest);
+            if (!ObjectUtils.isEmpty(callbackInfo)) {
+                resultBean.addData("execSuccessful", callbackInfo.isSuccess());
+                resultBean.addData("execResponse", callbackInfo.getResponseStr());
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+                message = "响应异常";
+            }
         } catch (NilParamException | UnCreatedFileException e) {
             isSuccess = false;
             message = e.getMessage();
