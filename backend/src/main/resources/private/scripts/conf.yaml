@@ -1,0 +1,7 @@
+# config
+
+# JVM
+env.java.opts: -Xmx=1G
+
+# 启动端口： xxx.jar --server.port=8859
+env.port: 8888
