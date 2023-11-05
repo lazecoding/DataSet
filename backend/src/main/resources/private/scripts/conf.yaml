@@ -1,7 +1,13 @@
-# config
+# 环境配置
 
-# JVM
-env.java.opts: -Xmx=1G
+# JAVA_OPTS
+env.java.opts: -Xms1G -Xmx1G
 
-# 启动端口： xxx.jar --server.port=8859
+# 启动端口 --server.port=8859
 env.port: 8888
+
+# 自定义日志路径
+env.log.path: ../logs
+
+# 自定义日志级别：TRACE > DEBUG > INFO > WARN > ERROR > FATAL
+env.log.level: DEBUG
