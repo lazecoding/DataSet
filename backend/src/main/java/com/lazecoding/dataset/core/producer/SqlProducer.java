@@ -3,12 +3,10 @@ package com.lazecoding.dataset.core.producer;
 import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.core.enums.FieldTypeEnum;
 import com.lazecoding.dataset.core.enums.MockTypeEnum;
-import com.lazecoding.dataset.core.schema.SchemaException;
 import com.lazecoding.dataset.core.schema.TableSchema;
 import com.lazecoding.dataset.core.schema.TableSchemaUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -120,7 +118,8 @@ public class SqlProducer {
 
     /**
      * 构造插入数据 SQL
-     * e.g. INSERT INTO report (id, content) VALUES (1, '这个有点问题吧');
+     *
+     * e.g. INSERT INTO 表名(字段1, 字段2) VALUES (字段1数据, 字段2数据);
      *
      * @param tableSchema 表概要
      * @param dataList    数据列表
@@ -148,13 +147,13 @@ public class SqlProducer {
                     return !MockTypeEnum.NONE.equals(mockTypeEnum);
                 })
                 .collect(Collectors.toList());
+        String keyStr = fieldList.stream()
+                .map(field -> TableSchemaUtils.wrapFieldName(field.getFieldName()))
+                .collect(Collectors.joining(", "));
         StringBuilder resultStringBuilder = new StringBuilder();
         int total = dataList.size();
         for (int i = 0; i < total; i++) {
             Map<String, Object> dataRow = dataList.get(i);
-            String keyStr = fieldList.stream()
-                    .map(field -> TableSchemaUtils.wrapFieldName(field.getFieldName()))
-                    .collect(Collectors.joining(", "));
             String valueStr = fieldList.stream()
                     .map(field -> getValueStr(field, dataRow.get(field.getFieldName())))
                     .collect(Collectors.joining(", "));
