@@ -1,5 +1,7 @@
 package com.lazecoding.dataset.core.producer;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.ListUtil;
 import com.lazecoding.dataset.common.exceptions.NilParamException;
 import com.lazecoding.dataset.core.enums.FieldTypeEnum;
 import com.lazecoding.dataset.core.enums.MockTypeEnum;
@@ -7,6 +9,7 @@ import com.lazecoding.dataset.core.schema.TableSchema;
 import com.lazecoding.dataset.core.schema.TableSchemaUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -167,6 +170,59 @@ public class SqlProducer {
         }
         return resultStringBuilder.toString();
     }
+
+    /**
+     * 构造插入数据 SQL
+     *
+     * e.g. INSERT INTO 表名(字段1, 字段2) VALUES (字段1数据, 字段2数据),(字段1数据, 字段2数据),(字段1数据, 字段2数据);
+     *
+     * @param tableSchema 表概要
+     * @param dataList    数据列表
+     * @return 生成的 SQL 列表字符串
+     */
+    public static String buildInsertSql0(TableSchema tableSchema, List<Map<String, Object>> dataList) {
+        if (CollectionUtils.isEmpty(dataList)) {
+            return "";
+        }
+        // 构造模板
+        String template = "insert into %s (%s) values %s;";
+        // 构造表名
+        String tableName = TableSchemaUtils.wrapTableName(tableSchema.getTableName());
+        String dbName = tableSchema.getDbName();
+        if (StringUtils.isNotBlank(dbName)) {
+            tableName = String.format("%s.%s", dbName, tableName);
+        }
+        // 构造表字段
+        List<TableSchema.Field> fieldList = tableSchema.getFieldList();
+        // 过滤掉不模拟的字段
+        fieldList = fieldList.stream()
+                .filter(field -> {
+                    MockTypeEnum mockTypeEnum = Optional.ofNullable(MockTypeEnum.getEnumByValue(field.getMockType()))
+                            .orElse(MockTypeEnum.NONE);
+                    return !MockTypeEnum.NONE.equals(mockTypeEnum);
+                })
+                .collect(Collectors.toList());
+        StringBuilder resultStringBuilder = new StringBuilder();
+        List<List<Map<String, Object>>> partitionLists = ListUtil.partition(dataList, 500);
+        String keyStr = fieldList.stream()
+                .map(field -> TableSchemaUtils.wrapFieldName(field.getFieldName()))
+                .collect(Collectors.joining(", "));
+        for (List<Map<String, Object>> item : partitionLists) {
+            List<String> valueStrList = new ArrayList<>();
+            for (Map<String, Object> dataRow : item) {
+                String valueStr = fieldList.stream()
+                        .map(field -> getValueStr(field, dataRow.get(field.getFieldName())))
+                        .collect(Collectors.joining(", "));
+                valueStr = "(" + valueStr + ")";
+                valueStrList.add(valueStr);
+            }
+            String finalValueStr = CollectionUtil.join(valueStrList, ",");
+            String result = String.format(template, tableName, keyStr, finalValueStr);
+            resultStringBuilder.append(result).append("\n");
+        }
+        return resultStringBuilder.toString();
+    }
+
 
     /**
      * 根据列的属性获取值字符串
