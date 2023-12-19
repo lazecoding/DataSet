@@ -45,7 +45,7 @@ public class ExecutionState implements Serializable {
     /**
      * 比例 XX % ， 0 - 100
      */
-    private int ratio;
+    private float ratio;
 
     /**
      * 运行状态(0 未运行；1 运行中；2 运行完毕；3 运行异常)
@@ -118,11 +118,11 @@ public class ExecutionState implements Serializable {
         this.endDate = endDate;
     }
 
-    public int getRatio() {
+    public float getRatio() {
         return ratio;
     }
 
-    public void setRatio(int ratio) {
+    public void setRatio(float ratio) {
         this.ratio = ratio;
     }
 
@@ -148,5 +148,21 @@ public class ExecutionState implements Serializable {
 
     public void setTemporary(Object temporary) {
         this.temporary = temporary;
+    }
+
+    @Override
+    public String toString() {
+        return "ExecutionState{" +
+                "uid='" + uid + '\'' +
+                ", name='" + name + '\'' +
+                ", desc='" + desc + '\'' +
+                ", stareDate=" + stareDate +
+                ", updateDate=" + updateDate +
+                ", endDate=" + endDate +
+                ", ratio=" + ratio +
+                ", state=" + state +
+                ", extend=" + extend +
+                ", temporary=" + temporary +
+                '}';
     }
 }

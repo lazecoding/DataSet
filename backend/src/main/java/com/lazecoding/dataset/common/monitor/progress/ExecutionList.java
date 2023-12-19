@@ -84,8 +84,25 @@ public class ExecutionList {
         ExecutionState one = new ExecutionState("one", "one");
         ExecutionList.push(one);
         ExecutionState two = new ExecutionState("two", "two");
+        two.setRatio(0F);
+        two.setState(0);
         ExecutionList.push(two);
-        System.out.println(ExecutionList.list().toString());
+        System.out.println(two);
+
+        two.setRatio(0.1F);
+        two.setState(1);
+        ExecutionList.push(two);
+        System.out.println(two);
+
+        two.setRatio(88.99F);
+        two.setState(1);
+        ExecutionList.push(two);
+        System.out.println(two);
+
+        two.setRatio(100F);
+        two.setState(2);
+        ExecutionList.push(two);
+        System.out.println(two);
     }
 
 }
