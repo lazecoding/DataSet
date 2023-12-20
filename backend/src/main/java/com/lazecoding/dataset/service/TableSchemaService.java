@@ -89,9 +89,7 @@ public class TableSchemaService {
         // 1. 预览一条数据
         tableSchema.setMockNum(1);
         // 2. 生产数据
-        List<Map<String, Object>> dataList = DataProducer.generateData(tableSchema);
-        // 3. 使用模拟数据生成 SQL
-        return SqlProducer.buildInsertSql(tableSchema, dataList);
+        return DataProducer.generateData(tableSchema);
     }
 
     /**
@@ -102,13 +100,8 @@ public class TableSchemaService {
         if (ObjectUtils.isEmpty(tableSchema)) {
             return false;
         }
-        // 生成模拟数据
-        List<Map<String, Object>> dataList = DataProducer.generateData(tableSchema);
-        if (CollectionUtils.isEmpty(dataList)) {
-            return false;
-        }
-        // 生成 SQL
-        String insertSql = SqlProducer.buildInsertSql(tableSchema, dataList);
+        // 生产数据
+        String insertSql = DataProducer.generateData(tableSchema);
         if (!StringUtils.hasText(insertSql)) {
             return false;
         }

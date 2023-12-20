@@ -1,5 +1,6 @@
 package com.lazecoding.dataset.core.producer;
 
+import cn.hutool.core.collection.ListUtil;
 import com.lazecoding.dataset.core.enums.MockTypeEnum;
 import com.lazecoding.dataset.core.generator.DataGenerator;
 import com.lazecoding.dataset.core.generator.DataGeneratorFactory;
@@ -28,37 +29,54 @@ public class DataProducer {
      * @param tableSchema
      * @return
      */
-    public static List<Map<String, Object>> generateData(TableSchema tableSchema) {
+    public static String generateData(TableSchema tableSchema) {
         if (ObjectUtils.isEmpty(tableSchema)) {
-            return null;
+            return "";
         }
-        int rowNum = tableSchema.getMockNum();
-        if (rowNum == 0) {
-            return null;
+        int mockNum = tableSchema.getMockNum();
+        if (mockNum == 0) {
+            return "";
         }
         List<TableSchema.Field> fieldList = tableSchema.getFieldList();
         // 初始化结果数据
-        List<Map<String, Object>> resultList = new ArrayList<>(rowNum);
-        for (int i = 0; i < rowNum; i++) {
-            resultList.add(new HashMap<>());
+        List<Map<String, Object>> resultList = new ArrayList<>(mockNum);
+        for (int i = 0; i < mockNum; i++) {
+            resultList.add(new HashMap<>(fieldList.size()));
         }
-        // 依次生成每一列
-        for (TableSchema.Field field : fieldList) {
-            MockTypeEnum mockTypeEnum = Optional.ofNullable(MockTypeEnum.getEnumByValue(field.getMockType())).orElse(MockTypeEnum.NONE);
-            DataGenerator dataGenerator = DataGeneratorFactory.getGenerator(mockTypeEnum);
-            if (ObjectUtils.isEmpty(dataGenerator)) {
-                continue;
-            }
-            List<String> mockDataList = dataGenerator.doGenerate(field, rowNum);
-            String fieldName = field.getFieldName();
-            // 填充结果列表
-            if (!CollectionUtils.isEmpty(mockDataList)) {
-                for (int i = 0; i < rowNum; i++) {
-                    resultList.get(i).put(fieldName, mockDataList.get(i));
+        List<List<Map<String, Object>>> lists = ListUtil.partition(resultList, 500);
+        if (CollectionUtils.isEmpty(lists)) {
+            return "";
+        }
+        int partitionIndex = 0;
+        int partitionSize = lists.size();
+        StringBuilder resultStringBuilder = new StringBuilder();
+        for (List<Map<String, Object>> itemList : lists) {
+            partitionIndex++;
+            int generateNum = itemList.size();
+            // 依次生成每一列
+            for (TableSchema.Field field : fieldList) {
+                MockTypeEnum mockTypeEnum = Optional.ofNullable(MockTypeEnum.getEnumByValue(field.getMockType())).orElse(MockTypeEnum.NONE);
+                DataGenerator dataGenerator = DataGeneratorFactory.getGenerator(mockTypeEnum);
+                if (ObjectUtils.isEmpty(dataGenerator)) {
+                    continue;
+                }
+                List<String> mockDataList = dataGenerator.doGenerate(field, generateNum);
+                String fieldName = field.getFieldName();
+                // 填充结果列表
+                if (!CollectionUtils.isEmpty(mockDataList)) {
+                    for (int i = 0; i < generateNum; i++) {
+                        itemList.get(i).put(fieldName, mockDataList.get(i));
+                    }
                 }
             }
+            // 生成 SQL
+            String buildSql = SqlProducer.buildInsertSql0(tableSchema, itemList);
+            resultStringBuilder.append(buildSql);
+            if (partitionIndex != partitionSize) {
+                resultStringBuilder.append("\n");
+            }
         }
-        return resultList;
+        return resultStringBuilder.toString();
     }
 
     /**

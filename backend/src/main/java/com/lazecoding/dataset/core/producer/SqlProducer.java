@@ -203,23 +203,21 @@ public class SqlProducer {
                 })
                 .collect(Collectors.toList());
         StringBuilder resultStringBuilder = new StringBuilder();
-        List<List<Map<String, Object>>> partitionLists = ListUtil.partition(dataList, 500);
+
         String keyStr = fieldList.stream()
                 .map(field -> TableSchemaUtils.wrapFieldName(field.getFieldName()))
                 .collect(Collectors.joining(", "));
-        for (List<Map<String, Object>> item : partitionLists) {
-            List<String> valueStrList = new ArrayList<>();
-            for (Map<String, Object> dataRow : item) {
-                String valueStr = fieldList.stream()
-                        .map(field -> getValueStr(field, dataRow.get(field.getFieldName())))
-                        .collect(Collectors.joining(", "));
-                valueStr = "(" + valueStr + ")";
-                valueStrList.add(valueStr);
-            }
-            String finalValueStr = CollectionUtil.join(valueStrList, ",");
-            String result = String.format(template, tableName, keyStr, finalValueStr);
-            resultStringBuilder.append(result).append("\n");
+        List<String> valueStrList = new ArrayList<>();
+        for (Map<String, Object> dataRow : dataList) {
+            String valueStr = fieldList.stream()
+                    .map(field -> getValueStr(field, dataRow.get(field.getFieldName())))
+                    .collect(Collectors.joining(", "));
+            valueStr = "(" + valueStr + ")";
+            valueStrList.add(valueStr);
         }
+        String finalValueStr = CollectionUtil.join(valueStrList, ",");
+        String result = String.format(template, tableName, keyStr, finalValueStr);
+        resultStringBuilder.append(result);
         return resultStringBuilder.toString();
     }
 
