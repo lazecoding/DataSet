@@ -20,6 +20,11 @@ import java.util.*;
  */
 public class DataProducer {
 
+    /**
+     * 批处理大小
+     */
+    private static final int BATCH_SIZE = 500;
+
     private DataProducer() {
     }
 
@@ -38,21 +43,17 @@ public class DataProducer {
             return "";
         }
         List<TableSchema.Field> fieldList = tableSchema.getFieldList();
-        // 初始化结果数据
-        List<Map<String, Object>> resultList = new ArrayList<>(mockNum);
-        for (int i = 0; i < mockNum; i++) {
-            resultList.add(new HashMap<>(fieldList.size()));
-        }
-        List<List<Map<String, Object>>> lists = ListUtil.partition(resultList, 500);
-        if (CollectionUtils.isEmpty(lists)) {
-            return "";
-        }
-        int partitionIndex = 0;
-        int partitionSize = lists.size();
+        // 处理批数
+        int batchTotal = (int) Math.ceil((double) mockNum / BATCH_SIZE);
         StringBuilder resultStringBuilder = new StringBuilder();
-        for (List<Map<String, Object>> itemList : lists) {
-            partitionIndex++;
-            int generateNum = itemList.size();
+        for (int i = 0; i < batchTotal; i++) {
+            // 算出该批待处理数量
+            int generateNum = Math.min(BATCH_SIZE, mockNum - i * BATCH_SIZE);
+            // 预处理 list
+            List<Map<String, Object>> mockDateCollect = new ArrayList<>(mockNum);
+            for (int j = 0; j < generateNum; j++) {
+                mockDateCollect.add(new HashMap<>(fieldList.size()));
+            }
             // 依次生成每一列
             for (TableSchema.Field field : fieldList) {
                 MockTypeEnum mockTypeEnum = Optional.ofNullable(MockTypeEnum.getEnumByValue(field.getMockType())).orElse(MockTypeEnum.NONE);
@@ -64,15 +65,15 @@ public class DataProducer {
                 String fieldName = field.getFieldName();
                 // 填充结果列表
                 if (!CollectionUtils.isEmpty(mockDataList)) {
-                    for (int i = 0; i < generateNum; i++) {
-                        itemList.get(i).put(fieldName, mockDataList.get(i));
+                    for (int k = 0; k < generateNum; k++) {
+                        mockDateCollect.get(k).put(fieldName, mockDataList.get(k));
                     }
                 }
             }
             // 生成 SQL
-            String buildSql = SqlProducer.buildInsertSql0(tableSchema, itemList);
+            String buildSql = SqlProducer.buildInsertSql0(tableSchema, mockDateCollect);
             resultStringBuilder.append(buildSql);
-            if (partitionIndex != partitionSize) {
+            if (i != (batchTotal - 1)) {
                 resultStringBuilder.append("\n");
             }
         }
