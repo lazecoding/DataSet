@@ -23,8 +23,9 @@ public class IncreaseDataGenerator implements DataGenerator {
         }
         int initValue = Integer.parseInt(mockParams);
         for (int i = 0; i < rowNum; i++) {
-            list.add(String.valueOf(initValue + i));
+            list.add(String.valueOf(initValue++));
         }
+        field.setMockParams(String.valueOf(initValue));
         return list;
     }
 
@@ -37,8 +38,9 @@ public class IncreaseDataGenerator implements DataGenerator {
         }
         int initValue = Integer.parseInt(mockParams);
         for (int i = 0; i < rowNum; i++) {
-            list.add(String.valueOf(initValue + i));
+            list.add(String.valueOf(initValue++));
         }
+        param.setMockParams(String.valueOf(initValue));
         return list;
     }
 }
