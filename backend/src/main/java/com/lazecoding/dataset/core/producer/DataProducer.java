@@ -90,8 +90,8 @@ public class DataProducer {
         if (ObjectUtils.isEmpty(httpRequest)) {
             return null;
         }
-        int rowNum = httpRequest.getMockNum();
-        if (rowNum == 0) {
+        int mockNum = httpRequest.getMockNum();
+        if (mockNum == 0) {
             return null;
         }
         HttpMethodEnum httpMethodEnum = HttpMethodEnum.getEnumByValue(httpRequest.getMethod());
@@ -128,24 +128,35 @@ public class DataProducer {
             return null;
         }
         // 初始化结果数据
-        List<Map<String, Object>> resultList = new ArrayList<>(rowNum);
-        for (int i = 0; i < rowNum; i++) {
-            resultList.add(new HashMap<>());
-        }
-        for (HttpRequest.Param param : params) {
-            MockTypeEnum mockTypeEnum = Optional.ofNullable(MockTypeEnum.getEnumByValue(param.getMockType())).orElse(MockTypeEnum.NONE);
-            DataGenerator dataGenerator = DataGeneratorFactory.getGenerator(mockTypeEnum);
-            if (ObjectUtils.isEmpty(dataGenerator)) {
-                continue;
+        List<Map<String, Object>> resultList = new ArrayList<>(mockNum);
+        // 处理批数
+        int batchTotal = (int) Math.ceil((double) mockNum / BATCH_SIZE);
+        for (int i = 0; i < batchTotal; i++) {
+            // 算出该批待处理数量
+            int generateNum = Math.min(BATCH_SIZE, mockNum - i * BATCH_SIZE);
+            // 预处理 list
+            List<Map<String, Object>> mockDateCollect = new ArrayList<>(mockNum);
+            for (int j = 0; j < generateNum; j++) {
+                mockDateCollect.add(new HashMap<>(params.size()));
             }
-            List<String> mockDataList = dataGenerator.doGenerate(param, rowNum);
-            String fieldName = param.getName();
-            // 填充结果列表
-            if (!CollectionUtils.isEmpty(mockDataList)) {
-                for (int i = 0; i < rowNum; i++) {
-                    resultList.get(i).put(fieldName, mockDataList.get(i));
+            // 依次生成每一列
+            for (HttpRequest.Param param : params) {
+                MockTypeEnum mockTypeEnum = Optional.ofNullable(MockTypeEnum.getEnumByValue(param.getMockType())).orElse(MockTypeEnum.NONE);
+                DataGenerator dataGenerator = DataGeneratorFactory.getGenerator(mockTypeEnum);
+                if (ObjectUtils.isEmpty(dataGenerator)) {
+                    continue;
+                }
+                List<String> mockDataList = dataGenerator.doGenerate(param, mockNum);
+                String fieldName = param.getName();
+                // 填充结果列表
+                if (!CollectionUtils.isEmpty(mockDataList)) {
+                    for (int k = 0; k < generateNum; k++) {
+                        mockDateCollect.get(k).put(fieldName, mockDataList.get(k));
+                    }
                 }
             }
+            // TODO 之后生成一批请求一批，目前先分段生成为分组请求准备
+            resultList.addAll(mockDateCollect);
         }
         return resultList;
     }
